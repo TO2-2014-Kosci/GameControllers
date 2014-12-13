@@ -1,6 +1,9 @@
 package to2.dice.controllers;
 
-import to2.dice.controllers.ngames.*;
+import to2.dice.controllers.ngames.MulCountingStrategy;
+import to2.dice.controllers.ngames.NGameController;
+import to2.dice.controllers.ngames.PlusCountingStrategy;
+import to2.dice.controllers.poker.PokerGameController;
 import to2.dice.game.GameSettings;
 import to2.dice.server.GameServer;
 
@@ -8,14 +11,14 @@ public final class GameControllerFactory {
     private GameControllerFactory() {
     }
 
-    public static AbstractGameController createGameControler(GameServer server, GameSettings settings, String creator) {
+    public static GameController createGameControler(GameServer server, GameSettings settings, String creator) {
         switch (settings.getGameType()) {
             case NPLUS:
-                return new to2.dice.controllers.ngames.NGameController(server, settings, creator, new PlusCountingStrategy());
+                return new NGameController(server, settings, creator, new PlusCountingStrategy());
             case NMUL:
-                return new to2.dice.controllers.ngames.NGameController(server, settings, creator, new MulCountingStrategy());
+                return new NGameController(server, settings, creator, new MulCountingStrategy());
             case POKER:
-                return new to2.dice.controllers.poker.PokerGameController(server, settings, creator);
+                return new PokerGameController(server, settings, creator);
             default:
                 return null;
         }

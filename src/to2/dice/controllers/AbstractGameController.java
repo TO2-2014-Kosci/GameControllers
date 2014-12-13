@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractGameController {
+public abstract class AbstractGameController implements GameController {
     protected RoomController roomController;
     private GameState state;
     private GameSettings settings;
@@ -27,9 +27,13 @@ public abstract class AbstractGameController {
         this.settings = settings;
 
         roomController = new RoomController(server, this, gameThread, settings, state, bots);
+        gameThread = new GameThread(server, this, this.settings, this.state, bots);
+
         roomController.addObserver(creator);
         createBots();
     }
+
+    public abstract Player getWinner(List<Player> players);
 
     public GameInfo getGameInfo() {
         return new GameInfo(settings, state);
@@ -60,8 +64,6 @@ public abstract class AbstractGameController {
         }
         return response;
     }
-
-    public abstract Player getWinner(List<Player> players);
 
     private Response joinRoom(String senderName) {
         if (roomController.isObserverWithName(senderName)) {
@@ -139,9 +141,10 @@ public abstract class AbstractGameController {
             int botsNumber = entry.getValue();
 
             for (int i = 0; i < botsNumber; i++) {
-                Bot bot = BotFactory.createBot(botLevel, settings.getGameType(), settings.getTimeForMove());
-                String botName = "bot#" + botId++;
-                roomController.addBot(botName, bot);
+                //TODO change package path in AI .jar
+                //Bot bot = BotFactory.createBot(settings.getGameType(), botLevel, settings.getTimeForMove());
+                //String botName = "bot#" + botId++;
+                //roomController.addBot(botName, bot);
             }
         }
     }

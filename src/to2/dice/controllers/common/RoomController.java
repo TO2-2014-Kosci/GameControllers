@@ -13,14 +13,14 @@ import java.util.Map;
 
 public class RoomController {
 
-    private GameServer server;
-    private AbstractGameController controller;
     private final GameThread gameThread;
     private final GameSettings settings;
     private final GameState state;
+    private final int ROOM_INACTIVITY_TIME = 5000;
+    private GameServer server;
+    private AbstractGameController controller;
     private List<String> observers = new ArrayList<String>();
     private Map<Player, Bot> bots;
-    private final int ROOM_INACTIVITY_TIME = 5000;
 
     public RoomController(GameServer server, AbstractGameController controller, GameThread gameThread, GameSettings settings, GameState state, Map<Player, Bot> bots) {
         this.server = server;
@@ -52,7 +52,7 @@ public class RoomController {
     }
 
     public void removePlayer(String playerName) {
-        state.removePlayer(playerName);
+        state.removePlayer(new Player(playerName, false, settings.getDiceNumber()));
     }
 
     public void addBot(String botName, Bot bot) {
@@ -82,7 +82,7 @@ public class RoomController {
         return (observers.isEmpty());
     }
 
-    private boolean isGameStartConditionMet(){
+    private boolean isGameStartConditionMet() {
         return (state.getPlayers().size() == settings.getMaxPlayers() && !state.isGameStarted());
     }
 
