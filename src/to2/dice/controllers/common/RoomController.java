@@ -2,6 +2,7 @@ package to2.dice.controllers.common;
 
 import to2.dice.ai.Bot;
 import to2.dice.controllers.AbstractGameController;
+import to2.dice.controllers.GameController;
 import to2.dice.game.GameSettings;
 import to2.dice.game.GameState;
 import to2.dice.game.Player;
@@ -13,22 +14,25 @@ import java.util.Map;
 
 public class RoomController {
 
-    private final GameThread gameThread;
+    private GameThread gameThread;
     private final GameSettings settings;
     private final GameState state;
     private final int ROOM_INACTIVITY_TIME = 5000;
     private GameServer server;
-    private AbstractGameController controller;
+    private GameController gameController;
     private List<String> observers = new ArrayList<String>();
     private Map<Player, Bot> bots;
 
-    public RoomController(GameServer server, AbstractGameController controller, GameThread gameThread, GameSettings settings, GameState state, Map<Player, Bot> bots) {
+    public RoomController(GameServer server, GameController gameController, GameSettings settings, GameState state, Map<Player, Bot> bots) {
         this.server = server;
-        this.controller = controller;
-        this.gameThread = gameThread;
+        this.gameController = gameController;
         this.settings = settings;
         this.state = state;
         this.bots = bots;
+    }
+
+    public void setGameThread(GameThread gameThread) {
+        this.gameThread = gameThread;
     }
 
     public void addObserver(String observerName) {
@@ -39,23 +43,25 @@ public class RoomController {
         observers.remove(observerName);
         if (isRoomEmpty()) {
             //TODO waiting some time and interrupt when addObserver
-            server.finishGame(controller);
+            server.finishGame(gameController);
         }
     }
 
-    public void addPlayer(String playerName) {
+    public synchronized void addPlayer(String playerName) {
         state.addPlayer(new Player(playerName, false, settings.getDiceNumber()));
+        server.sendToAll(gameController, state);
 
         if (isGameStartConditionMet()) {
             gameThread.start();
         }
     }
 
-    public void removePlayer(String playerName) {
+    public synchronized void removePlayer(String playerName) {
         state.removePlayer(new Player(playerName, false, settings.getDiceNumber()));
+        server.sendToAll(gameController, state);
     }
 
-    public void addBot(String botName, Bot bot) {
+    public synchronized void addBot(String botName, Bot bot) {
         Player botPlayer = new Player((botName), true, settings.getDiceNumber());
         bots.put(botPlayer, bot);
         state.addPlayer(botPlayer);
@@ -65,7 +71,7 @@ public class RoomController {
         return observers.contains(name);
     }
 
-    public boolean isPlayerWithName(String name) {
+    public synchronized boolean isPlayerWithName(String name) {
         for (Player player : state.getPlayers()) {
             if (player.getName() == name) {
                 return true;
@@ -74,7 +80,7 @@ public class RoomController {
         return false;
     }
 
-    public boolean isRoomFull() {
+    public synchronized boolean isRoomFull() {
         return (state.getPlayers().size() == settings.getMaxPlayers());
     }
 
@@ -82,11 +88,11 @@ public class RoomController {
         return (observers.isEmpty());
     }
 
-    private boolean isGameStartConditionMet() {
+    private synchronized boolean isGameStartConditionMet() {
         return (state.getPlayers().size() == settings.getMaxPlayers() && !state.isGameStarted());
     }
 
-    public boolean isGameStarted() {
+    public synchronized boolean isGameStarted() {
         return (state.isGameStarted());
     }
 }

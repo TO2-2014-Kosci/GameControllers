@@ -1,4 +1,4 @@
-package to2.dice.controllers.poker;
+package to2.dice.controllers.common;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import to2.dice.controllers.common.GameThread;

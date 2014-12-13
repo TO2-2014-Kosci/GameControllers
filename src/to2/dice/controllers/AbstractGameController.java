@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractGameController implements GameController {
-    protected RoomController roomController;
-    private GameState state;
-    private GameSettings settings;
+    protected final RoomController roomController;
+    private final GameState state;
+    private final GameSettings settings;
     private GameThread gameThread;
     private Map<Player, Bot> bots = new HashMap<Player, Bot>();
 
@@ -26,17 +26,22 @@ public abstract class AbstractGameController implements GameController {
         this.state = new GameState();
         this.settings = settings;
 
-        roomController = new RoomController(server, this, gameThread, settings, state, bots);
+        roomController = new RoomController(server, this, settings, state, bots);
         gameThread = new GameThread(server, this, this.settings, this.state, bots);
+        roomController.setGameThread(gameThread);
+        gameThread.setRoomController(roomController);
 
         roomController.addObserver(creator);
         createBots();
     }
 
+
     public abstract Player getWinner(List<Player> players);
 
     public GameInfo getGameInfo() {
-        return new GameInfo(settings, state);
+        synchronized (state) {
+            return new GameInfo(settings, state);
+        }
     }
 
     public synchronized Response handleGameAction(GameAction gameAction) {
@@ -45,19 +50,15 @@ public abstract class AbstractGameController implements GameController {
             case JOIN_ROOM:
                 response = joinRoom(gameAction.getSender());
                 break;
-
             case LEAVE_ROOM:
                 response = leaveRoom(gameAction.getSender());
                 break;
-
             case SIT_DOWN:
                 response = sitDown(gameAction.getSender());
                 break;
-
             case STAND_UP:
                 response = standUp(gameAction.getSender());
                 break;
-
             case REROLL:
                 response = reroll(gameAction.getSender(), ((RerollAction) gameAction).getChosenDice());
                 break;
@@ -94,10 +95,9 @@ public abstract class AbstractGameController implements GameController {
             return new Response(Response.Type.FAILURE, ControllerMessage.SENDER_IS_NOT_OBSERVER.toString());
         } else if (!roomController.isPlayerWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_ALREADY_STAND_UP.toString());
+        } else if (roomController.isGameStarted()) {
+            return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_IS_IN_GAME.toString());
         } else {
-            if (roomController.isGameStarted()) {
-                roomController.removePlayer(senderName);
-            }
             roomController.removePlayer(senderName);
             return new Response(Response.Type.SUCCESS);
         }
@@ -113,13 +113,13 @@ public abstract class AbstractGameController implements GameController {
     }
 
     private Response reroll(String senderName, boolean[] chosenDices) {
-        if (!state.isGameStarted()) {
+        if (!roomController.isGameStarted()) {
             return new Response(Response.Type.FAILURE, ControllerMessage.GAME_IS_NOT_STARTED.toString());
         } else if (chosenDices.length != settings.getDiceNumber()) {
             return new Response(Response.Type.FAILURE, ControllerMessage.NO_SUCH_PLAYER.toString());
         } else if (!roomController.isPlayerWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.WRONG_DICE_NUMBER.toString());
-        } else if (state.getCurrentPlayer().getName().equals(senderName)) {
+        } else if (gameThread.getCurrentPlayerName().equals(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.OTHER_PLAYERS_TURN.toString());
         } else {
             /* boolean notTooLate = moveTimer.tryStop();

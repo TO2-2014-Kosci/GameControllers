@@ -2,6 +2,7 @@ package to2.dice.controllers.common;
 
 import to2.dice.ai.Bot;
 import to2.dice.controllers.AbstractGameController;
+import to2.dice.controllers.GameController;
 import to2.dice.game.Dice;
 import to2.dice.game.GameSettings;
 import to2.dice.game.GameState;
@@ -18,18 +19,19 @@ import java.util.concurrent.Executors;
 public class GameThread {
 
     private final int REROLLS_NUMBER = 2;
-    private AbstractGameController gameController;
-    private GameServer server;
-    private GameSettings settings;
-    private GameState state;
-    private DiceRoller diceRoller;
+    private final GameController gameController;
+    private final GameServer server;
+    private final GameSettings settings;
+    private final GameState state;
+    private final DiceRoller diceRoller;
+    private RoomController roomController;
     private Map<Player, Bot> bots;
     private Map<Player, Integer> numberOfAbsences = new HashMap<Player, Integer>();
     private boolean[] chosenDice;
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public GameThread(GameServer server, AbstractGameController gameController, GameSettings settings, GameState state, Map<Player, Bot> bots) {
+    public GameThread(GameServer server, GameController gameController, GameSettings settings, GameState state, Map<Player, Bot> bots) {
         this.gameController = gameController;
         this.server = server;
         this.settings = settings;
@@ -38,16 +40,35 @@ public class GameThread {
         diceRoller = new DiceRoller(settings.getDiceNumber());
     }
 
+    public void setRoomController(RoomController roomController) {
+        this.roomController = roomController;
+    }
+
     public void start() {
         executor.execute(new GameRoutine());
     }
 
-    public synchronized void handleRerollRequest(boolean[] chosenDice) {
-
-//        while ()
-        this.chosenDice = chosenDice;
-        gameController.notify();
+    public void interrupt() {
+        executor.shutdownNow();
     }
+
+    public int getRerollsNumber() {
+        return REROLLS_NUMBER;
+    }
+
+    public void handleRerollRequest(boolean[] chosenDice) {
+        synchronized (gameController) {
+            this.chosenDice = chosenDice;
+            gameController.notify();
+        }
+    }
+
+    public String getCurrentPlayerName() {
+        synchronized (gameController) {
+            return state.getCurrentPlayer().getName();
+        }
+    }
+
 
     private class GameRoutine implements Runnable {
 
@@ -56,6 +77,7 @@ public class GameThread {
             try {
                 synchronized (gameController) {
                     state.setGameStarted(true);
+
 
                     while (state.getCurrentRound() < settings.getRoundsToWin()) {
                         startNewRound();
@@ -90,8 +112,8 @@ public class GameThread {
                             }
                         }
 
-                        Player roundWinner = getRoundWinner();
-                        addPointToPlayer(roundWinner);
+//                        Player roundWinner = getRoundWinner();
+//                        addPointToPlayer(roundWinner);
                     }
 
                     state.setGameStarted(false);
@@ -127,9 +149,9 @@ public class GameThread {
         }
 
         //TODO WRONG! winner PokerHands checking
-        private Player getRoundWinner() {
-            return gameController.getWinner(state.getPlayers());
-        }
+//        private Player getRoundWinner() {
+//            return gameController.getWinner(state.getPlayers());
+//        }
 
         private void addPenaltyToPlayer(Player player) {
             int currentAbsences = numberOfAbsences.get(player);
