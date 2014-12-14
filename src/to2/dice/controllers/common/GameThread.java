@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 
 public abstract class GameThread {
 
-    protected final int REROLLS_NUMBER = 2;
     protected final GameController gameController;
     protected final GameServer server;
     protected final GameSettings settings;
@@ -55,10 +54,6 @@ public abstract class GameThread {
 
     public void interrupt() {
         executor.shutdownNow();
-    }
-
-    public int getRerollsNumber() {
-        return REROLLS_NUMBER;
     }
 
     public void handleRerollRequest(boolean[] chosenDice) {
@@ -102,10 +97,11 @@ public abstract class GameThread {
     protected void addPenaltyToPlayer(Player player) {
         int currentAbsences = numberOfAbsences.get(player);
         currentAbsences++;
-        if (currentAbsences == settings.getMaxInactiveTurns())
+        if (currentAbsences == settings.getMaxInactiveTurns()) {
             removePlayer(player.getName());
-        else
+        } else {
             numberOfAbsences.put(player, currentAbsences);
+        }
     }
 
     protected void removePlayer(String senderName) {

@@ -10,11 +10,11 @@ import java.util.Arrays;
 
 public class HandFactory {
 
-    public static Hand createHandFromDice(Dice dice) throws Exception {
+    public static Hand createHandFromDice(Dice dice) {
         int[] diceArray = dice.getDiceArray();
 
         if (diceArray.length != 5) {
-            throw new Exception();
+           return null;
         }
 
         Hand.sort(diceArray);

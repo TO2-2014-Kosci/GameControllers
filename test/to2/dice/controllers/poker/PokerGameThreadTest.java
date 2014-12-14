@@ -160,6 +160,10 @@ public class PokerGameThreadTest {
         GameState requestState = getState("Last.");
         checkDiceRerolling("Last. ", 3, chosenDice, requestState);
         assertFalse("Finishing GameState with no isGameStarted set to false", requestState.isGameStarted());
+        for (Player player : requestState.getPlayers()) {
+            System.out.print(player.getName() + ": " + Integer.toString(player.getScore()) + "; ");
+        }
+        System.out.println();
 
 
     }
