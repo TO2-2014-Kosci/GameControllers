@@ -1,11 +1,11 @@
-package to2.dice.controllers.common;
+package to2.dice.controllers.poker;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import to2.dice.ai.Bot;
 import to2.dice.controllers.GameController;
+import to2.dice.controllers.common.RoomController;
 import to2.dice.game.*;
 import to2.dice.messaging.GameAction;
 import to2.dice.messaging.Response;
@@ -16,7 +16,7 @@ import java.util.*;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
-public class GameThreadTest {
+public class PokerGameThreadTest {
 
     private class SendToAllRequest {
 
@@ -46,7 +46,7 @@ public class GameThreadTest {
     private GameSettings settings;
     private Queue<SendToAllRequest> sentRequests;
     private GameController gameController;
-    private GameThread gameThread;
+    private PokerGameThread gameThread;
     private HashMap<Player, Bot> bots;
     private HashMap<BotLevel, Integer> botsNumber;
     private Player firstPlayer;
@@ -89,7 +89,9 @@ public class GameThreadTest {
             }
         };
 
-        gameThread = new GameThread(server, gameController, settings, state, bots);
+        gameThread = new PokerGameThread(server, gameController, settings, state, bots) {
+
+        };
         roomController = new RoomController(server, gameController, settings, state, bots);
 
         gameThread.setRoomController(roomController);

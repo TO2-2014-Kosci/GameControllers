@@ -10,11 +10,6 @@ import java.util.List;
 public class PokerGameController extends AbstractGameController {
     public PokerGameController(GameServer server, GameSettings settings, String creator) {
         super(server, settings, creator);
-    }
-
-    @Override
-    public Player getWinner(List<Player> players) {
-        //TODO: function
-        return null;
+        setGameThread(new PokerGameThread(server, this, settings, state, bots));
     }
 }

@@ -1,8 +1,10 @@
-package to2.dice.controllers.poker.hands;
+package to2.dice.controllers.poker;
 
 
+import to2.dice.controllers.poker.hands.*;
 import to2.dice.game.Dice;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 
@@ -58,7 +60,7 @@ public class HandFactory {
         }
     }
 
-    public static Full getFull(int[] dice) {
+    private static Full getFull(int[] dice) {
         if ((dice[0] == dice[1]) && ((dice[2] == dice[3]) && (dice[3] == dice[4]))) {
             return new Full(dice[2], dice[0]);
         } else if ((dice[0] == dice[1]) && ((dice[1] == dice[2]) && (dice[3] == dice[4]))) {
@@ -68,7 +70,7 @@ public class HandFactory {
         }
     }
 
-    public static LargeStraight getLargeStraight(int[] dice) {
+    private static LargeStraight getLargeStraight(int[] dice) {
         if (Arrays.equals(dice, new int[]{2, 3, 4, 5, 6})) {
             return new LargeStraight();
         } else {
@@ -76,7 +78,7 @@ public class HandFactory {
         }
     }
 
-    public static SmallStraight getSmallStraight(int[] dice) {
+    private static SmallStraight getSmallStraight(int[] dice) {
         if (Arrays.equals(dice, new int[]{1, 2, 3, 4, 5})) {
             return new SmallStraight();
         } else {
@@ -84,7 +86,7 @@ public class HandFactory {
         }
     }
 
-    public static Three getThree(int[] dice) {
+    private static Three getThree(int[] dice) {
         if (dice[0] == dice[1] && dice[1] == dice[2]) {
             return new Three(dice[0], new int[]{dice[3], dice[4]});
         } else if (dice[1] == dice[2] && dice[2] == dice[3]) {
@@ -96,7 +98,7 @@ public class HandFactory {
         }
     }
 
-    public static TwoPairs getTwoPairs(int[] dice) {
+    private static TwoPairs getTwoPairs(int[] dice) {
         if ((dice[0] == dice[1] && dice[3] == dice[4])) {
             return new TwoPairs(dice[0], dice[3], dice[2]);
         } else if ((dice[1] == dice[2] && dice[3] == dice[4])) {
@@ -108,7 +110,7 @@ public class HandFactory {
         }
     }
 
-    public static Pair getPair(int[] dice) {
+    private static Pair getPair(int[] dice) {
         if (dice[0] == dice[1]) {
             return new Pair(dice[0], new int[]{dice[2], dice[3], dice[4]});
         } else if (dice[1] == dice[2]) {

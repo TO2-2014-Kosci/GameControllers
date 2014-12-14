@@ -1,5 +1,7 @@
 package to2.dice.controllers.poker.hands;
 
+import java.util.Arrays;
+
 public class Pair extends Hand {
 
     private int pairValue;
@@ -9,6 +11,7 @@ public class Pair extends Hand {
         super(HandType.PAIR);
         this.pairValue = pairValue;
         this.otherValues = otherValues;
+        sort(this.otherValues);
     }
 
     public int getPairValue() {
@@ -31,5 +34,27 @@ public class Pair extends Hand {
                 return compareValues(this.otherValues, givenPair.getOtherValues());
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Pair pair = (Pair) o;
+
+        if (pairValue != pair.pairValue) return false;
+        if (!Arrays.equals(otherValues, pair.otherValues)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + pairValue;
+        result = 31 * result + Arrays.hashCode(otherValues);
+        return result;
     }
 }

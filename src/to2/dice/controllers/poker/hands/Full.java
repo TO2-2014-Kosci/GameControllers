@@ -31,4 +31,24 @@ public class Full extends Hand {
             }
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Full full = (Full) o;
+
+        if (pairValue != full.pairValue) return false;
+        if (threeValue != full.threeValue) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = threeValue;
+        result = 31 * result + pairValue;
+        return result;
+    }
 }

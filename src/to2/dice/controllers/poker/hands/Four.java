@@ -31,4 +31,24 @@ public class Four extends Hand {
             }
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Four four = (Four) o;
+
+        if (fourValue != four.fourValue) return false;
+        if (otherValue != four.otherValue) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fourValue;
+        result = 31 * result + otherValue;
+        return result;
+    }
 }

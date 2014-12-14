@@ -20,4 +20,21 @@ public class Poker extends Hand {
             return this.value - ((Poker) hand).getValue();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Poker poker = (Poker) o;
+
+        if (value != poker.value) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return value;
+    }
 }

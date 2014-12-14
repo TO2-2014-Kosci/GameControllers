@@ -32,6 +32,26 @@ public abstract class Hand implements Comparable<Hand> {
         }
     }
 
+    public static boolean isEqual(Hand a, Hand b) {
+        return a.equals(b);
+    }
+
+    public static boolean isGreater(Hand a, Hand b) {
+        return a.compareTo(b) > 0;
+    }
+
+    public static boolean isGreaterOrEqual(Hand a, Hand b) {
+        return a.compareTo(b) >= 0;
+    }
+
+    public static boolean isLesser(Hand a, Hand b) {
+        return a.compareTo(b) < 0;
+    }
+
+    public static boolean isLesserOrEqual(Hand a, Hand b) {
+        return a.compareTo(b) <= 0;
+    }
+
     protected int compareValues(int[] firstArray, int[] secondArray) {
         if (firstArray.length != secondArray.length)
             throw new IllegalArgumentException();
@@ -42,5 +62,22 @@ public abstract class Hand implements Comparable<Hand> {
             }
             return 0;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Hand hand = (Hand) o;
+
+        if (type != hand.type) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return type.hashCode();
     }
 }

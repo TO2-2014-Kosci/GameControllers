@@ -13,11 +13,6 @@ public class NGameController extends AbstractGameController {
     public NGameController(GameServer server, GameSettings settings, String creator, CountingStrategy strategy) {
         super(server, settings, creator);
         this.strategy = strategy;
-    }
-
-    @Override
-    public Player getWinner(List<Player> players) {
-        //TODO: function
-        return null;
+        setGameThread(new NGameThread(server, this, settings, state, bots));
     }
 }

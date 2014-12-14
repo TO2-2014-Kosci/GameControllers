@@ -1,5 +1,7 @@
 package to2.dice.controllers.poker.hands;
 
+import java.util.Arrays;
+
 public class Three extends Hand {
     private int threeValue;
     private int[] otherValues;
@@ -31,5 +33,25 @@ public class Three extends Hand {
                 return compareValues(this.otherValues, givenThree.getOtherValues());
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Three three = (Three) o;
+
+        if (threeValue != three.threeValue) return false;
+        if (!Arrays.equals(otherValues, three.otherValues)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = threeValue;
+        result = 31 * result + Arrays.hashCode(otherValues);
+        return result;
     }
 }

@@ -1,8 +1,8 @@
 package to2.dice.controllers;
 
-import to2.dice.controllers.ngames.MulCountingStrategy;
+import to2.dice.controllers.ngames.strategies.MulCountingStrategy;
 import to2.dice.controllers.ngames.NGameController;
-import to2.dice.controllers.ngames.PlusCountingStrategy;
+import to2.dice.controllers.ngames.strategies.PlusCountingStrategy;
 import to2.dice.controllers.poker.PokerGameController;
 import to2.dice.game.GameSettings;
 import to2.dice.server.GameServer;

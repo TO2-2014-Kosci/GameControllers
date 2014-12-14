@@ -44,4 +44,26 @@ public class TwoPairs extends Hand {
             }
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TwoPairs twoPairs = (TwoPairs) o;
+
+        if (greaterPairValue != twoPairs.greaterPairValue) return false;
+        if (lowerPairValue != twoPairs.lowerPairValue) return false;
+        if (otherValue != twoPairs.otherValue) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = greaterPairValue;
+        result = 31 * result + lowerPairValue;
+        result = 31 * result + otherValue;
+        return result;
+    }
 }

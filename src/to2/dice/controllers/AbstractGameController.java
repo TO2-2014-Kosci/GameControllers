@@ -17,26 +17,27 @@ import java.util.Map;
 
 public abstract class AbstractGameController implements GameController {
     protected final RoomController roomController;
-    private final GameState state;
-    private final GameSettings settings;
-    private GameThread gameThread;
-    private Map<Player, Bot> bots = new HashMap<Player, Bot>();
+    protected final GameState state;
+    protected final GameSettings settings;
+    protected GameThread gameThread;
+    protected Map<Player, Bot> bots = new HashMap<Player, Bot>();
 
     public AbstractGameController(GameServer server, GameSettings settings, String creator) {
         this.state = new GameState();
         this.settings = settings;
 
         roomController = new RoomController(server, this, settings, state, bots);
-        gameThread = new GameThread(server, this, this.settings, this.state, bots);
-        roomController.setGameThread(gameThread);
-        gameThread.setRoomController(roomController);
 
         roomController.addObserver(creator);
         createBots();
     }
 
+    public void setGameThread(GameThread gameThread) {
+        this.gameThread = gameThread;
+        this.gameThread.setRoomController(this.roomController);
+        this.roomController.setGameThread(this.gameThread);
 
-    public abstract Player getWinner(List<Player> players);
+    }
 
     public GameInfo getGameInfo() {
         synchronized (state) {
