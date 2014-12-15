@@ -98,6 +98,7 @@ public abstract class AbstractGameController implements GameController {
             return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_ALREADY_STAND_UP.toString());
         } else if (roomController.isGameStarted()) {
             return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_IS_IN_GAME.toString());
+            //TODO Leave table during game
         } else {
             roomController.removePlayer(senderName);
             return new Response(Response.Type.SUCCESS);
@@ -116,11 +117,11 @@ public abstract class AbstractGameController implements GameController {
     private Response reroll(String senderName, boolean[] chosenDices) {
         if (!roomController.isGameStarted()) {
             return new Response(Response.Type.FAILURE, ControllerMessage.GAME_IS_NOT_STARTED.toString());
-        } else if (chosenDices.length != settings.getDiceNumber()) {
-            return new Response(Response.Type.FAILURE, ControllerMessage.NO_SUCH_PLAYER.toString());
         } else if (!roomController.isPlayerWithName(senderName)) {
+            return new Response(Response.Type.FAILURE, ControllerMessage.NO_SUCH_PLAYER.toString());
+        } else if (chosenDices.length != settings.getDiceNumber()) {
             return new Response(Response.Type.FAILURE, ControllerMessage.WRONG_DICE_NUMBER.toString());
-        } else if (gameThread.getCurrentPlayerName().equals(senderName)) {
+        } else if (!gameThread.getCurrentPlayerName().equals(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.OTHER_PLAYERS_TURN.toString());
         } else {
             /* boolean notTooLate = moveTimer.tryStop();
