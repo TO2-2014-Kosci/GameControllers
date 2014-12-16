@@ -16,7 +16,7 @@ import java.util.*;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
-public class PokerGameThreadTest {
+public class HumanGameThreadTest {
 
     private class SendToAllRequest {
 
@@ -163,6 +163,7 @@ public class PokerGameThreadTest {
         for (Player player : requestState.getPlayers()) {
             System.out.print(player.getName() + ": " + Integer.toString(player.getScore()) + "; ");
         }
+        assertTrue("GameStates left after game", sentRequests.isEmpty());
         System.out.println();
 
 
