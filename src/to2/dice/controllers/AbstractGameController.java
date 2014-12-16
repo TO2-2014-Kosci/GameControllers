@@ -83,7 +83,7 @@ public abstract class AbstractGameController implements GameController {
             return new Response(Response.Type.FAILURE, ControllerMessage.NO_EMPTY_PLACES.toString());
         } else if (!roomController.isObserverWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.SENDER_IS_NOT_OBSERVER.toString());
-        } else if (!roomController.isPlayerWithName(senderName)) {
+        } else if (roomController.isPlayerWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_ALREADY_SAT_DOWN.toString());
         } else {
             roomController.addPlayer(senderName);
