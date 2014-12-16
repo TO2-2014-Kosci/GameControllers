@@ -50,7 +50,7 @@ public class PokerGameThreadTest {
     private HashMap<Player, Bot> bots;
     private HashMap<BotLevel, Integer> botsNumber;
     private Player firstPlayer;
-    Map<Player, int[]> previousDiceArray = new HashMap<>();
+    Map<Player, int[]> previousDiceArray = new HashMap<Player, int[]>();
 
     @Before
     public void setUp() throws Exception {
