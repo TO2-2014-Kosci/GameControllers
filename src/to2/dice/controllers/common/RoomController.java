@@ -72,7 +72,12 @@ public class RoomController {
     }
 
     public synchronized boolean isPlayerWithName(String name) {
-        return state.isPlayerWithName(name);
+        for (Player player : state.getPlayers()) {
+            if (player.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public synchronized boolean isRoomFull() {
