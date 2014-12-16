@@ -22,8 +22,8 @@ public abstract class AbstractGameController implements GameController {
     protected GameThread gameThread;
     protected Map<Player, Bot> bots = new HashMap<Player, Bot>();
 
-    public AbstractGameController(GameServer server, GameSettings settings, String creator) {
-        this.state = new GameState();
+    public AbstractGameController(GameServer server, GameSettings settings, String creator, GameState state) {
+        this.state = state;
         this.settings = settings;
 
         roomController = new RoomController(server, this, settings, state, bots);
