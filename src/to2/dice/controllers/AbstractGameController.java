@@ -22,8 +22,8 @@ public abstract class AbstractGameController implements GameController {
     protected GameThread gameThread;
     protected Map<Player, Bot> bots = new HashMap<Player, Bot>();
 
-    public AbstractGameController(GameServer server, GameSettings settings, String creator) {
-        this.state = new GameState();
+    public AbstractGameController(GameServer server, GameSettings settings, String creator, GameState state) {
+        this.state = state;
         this.settings = settings;
 
         roomController = new RoomController(server, this, settings, state, bots);
@@ -85,7 +85,7 @@ public abstract class AbstractGameController implements GameController {
             return new Response(Response.Type.FAILURE, ControllerMessage.NO_EMPTY_PLACES.toString());
         } else if (!roomController.isObserverWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.SENDER_IS_NOT_OBSERVER.toString());
-        } else if (!roomController.isPlayerWithName(senderName)) {
+        } else if (roomController.isPlayerWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_ALREADY_SAT_DOWN.toString());
         } else {
             roomController.addPlayer(senderName);

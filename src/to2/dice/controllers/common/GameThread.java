@@ -81,7 +81,7 @@ public abstract class GameThread {
     }
 
     protected List<int[]> getOtherDiceArrays(Player player) {
-        List<int[]> otherDice = new ArrayList<>();
+        List<int[]> otherDice = new ArrayList<int[]>();
         for (Player p : state.getPlayers()) {
             if (p != player) {
                 otherDice.add(p.getDice().getDiceArray());

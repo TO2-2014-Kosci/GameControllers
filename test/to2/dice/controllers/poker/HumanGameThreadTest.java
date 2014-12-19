@@ -16,7 +16,7 @@ import java.util.*;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.*;
 
-public class PokerGameThreadTest {
+public class HumanGameThreadTest {
 
     private class SendToAllRequest {
 
@@ -50,7 +50,7 @@ public class PokerGameThreadTest {
     private HashMap<Player, Bot> bots;
     private HashMap<BotLevel, Integer> botsNumber;
     private Player firstPlayer;
-    Map<Player, int[]> previousDiceArray = new HashMap<>();
+    Map<Player, int[]> previousDiceArray = new HashMap<Player, int[]>();
 
     @Before
     public void setUp() throws Exception {
@@ -163,6 +163,7 @@ public class PokerGameThreadTest {
         for (Player player : requestState.getPlayers()) {
             System.out.print(player.getName() + ": " + Integer.toString(player.getScore()) + "; ");
         }
+        assertTrue("GameStates left after game", sentRequests.isEmpty());
         System.out.println();
 
 

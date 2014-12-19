@@ -112,7 +112,7 @@ public class PokerGameThread extends GameThread {
     }
 
     private Player getRoundWinner() {
-        List<PlayerHand> playerHand = new ArrayList<>();
+        List<PlayerHand> playerHand = new ArrayList<PlayerHand>();
         for (Player player : state.getPlayers()) {
             playerHand.add(new PlayerHand(player, HandFactory.createHandFromDice(player.getDice())));
         }
