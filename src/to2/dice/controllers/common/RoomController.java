@@ -37,6 +37,9 @@ public class RoomController {
 
     public void addObserver(String observerName) {
         observers.add(observerName);
+
+        /* Sending to all after joinRoom, because joining Player needs info */
+        server.sendToAll(gameController, state);
     }
 
     public void removeObserver(String observerName) {
@@ -72,12 +75,7 @@ public class RoomController {
     }
 
     public synchronized boolean isPlayerWithName(String name) {
-        for (Player player : state.getPlayers()) {
-            if (player.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
+        return state.isPlayerWithName(name);
     }
 
     public synchronized boolean isRoomFull() {
@@ -94,5 +92,14 @@ public class RoomController {
 
     public synchronized boolean isGameStarted() {
         return (state.isGameStarted());
+    }
+
+    /**
+     *
+     */
+    public synchronized void botGameStart(){
+        if(isGameStartConditionMet()){
+            gameThread.start();
+        }
     }
 }

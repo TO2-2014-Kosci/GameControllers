@@ -29,7 +29,9 @@ public abstract class AbstractGameController implements GameController {
         roomController = new RoomController(server, this, settings, state, bots);
 
         roomController.addObserver(creator);
+
         createBots();
+        roomController.botGameStart();
     }
 
     public void setGameThread(GameThread gameThread) {
@@ -143,10 +145,9 @@ public abstract class AbstractGameController implements GameController {
             int botsNumber = entry.getValue();
 
             for (int i = 0; i < botsNumber; i++) {
-                //TODO change package path in AI .jar
-                //Bot bot = BotFactory.createBot(settings.getGameType(), botLevel, settings.getTimeForMove());
-                //String botName = "bot#" + botId++;
-                //roomController.addBot(botName, bot);
+                Bot bot = BotFactory.createBot(settings.getGameType(), botLevel, settings.getTimeForMove());
+                String botName = "bot#" + botId++;
+                roomController.addBot(botName, bot);
             }
         }
     }
