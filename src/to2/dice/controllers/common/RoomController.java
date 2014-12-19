@@ -31,6 +31,11 @@ public class RoomController {
         this.bots = bots;
     }
 
+    /**
+     * Sets game thread with logic for it.
+     *
+     * @param gameThread the thread with game logic
+     */
     public void setGameThread(GameThread gameThread) {
         this.gameThread = gameThread;
     }
@@ -95,7 +100,7 @@ public class RoomController {
     }
 
     /**
-     *
+     * Starting game when only bots are playing
      */
     public synchronized void botGameStart(){
         if(isGameStartConditionMet()){
