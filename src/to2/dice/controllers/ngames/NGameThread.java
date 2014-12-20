@@ -2,7 +2,7 @@ package to2.dice.controllers.ngames;
 
 import to2.dice.ai.Bot;
 import to2.dice.controllers.GameController;
-import to2.dice.controllers.common.GameThread;
+import to2.dice.controllers.GameThread;
 import to2.dice.game.*;
 import to2.dice.server.GameServer;
 

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import to2.dice.ai.Bot;
 import to2.dice.controllers.GameController;
-import to2.dice.controllers.common.RoomController;
+import to2.dice.controllers.RoomController;
 import to2.dice.game.*;
 import to2.dice.messaging.GameAction;
 import to2.dice.messaging.Response;

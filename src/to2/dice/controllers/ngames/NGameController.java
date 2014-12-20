@@ -11,7 +11,7 @@ import java.util.List;
 public class NGameController extends AbstractGameController {
     private CountingStrategy strategy;
 
-    public NGameController(GameServer server, GameSettings settings, String creator, CountingStrategy strategy, NGameState state) {
+    public NGameController(GameServer server, GameSettings settings, NGameState state, String creator, CountingStrategy strategy) {
         super(server, settings, creator, state);
         this.strategy = strategy;
         setGameThread(new NGameThread(server, this, settings, state, bots, strategy));

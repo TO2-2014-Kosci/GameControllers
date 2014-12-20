@@ -1,4 +1,4 @@
-package to2.dice.controllers.common;
+package to2.dice.controllers;
 
 public enum ControllerMessage {
     SENDER_IS_NOT_OBSERVER("Nie możesz usiąść do gry, której nie obserwujesz"),

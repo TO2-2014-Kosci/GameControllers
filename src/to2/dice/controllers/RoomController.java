@@ -1,8 +1,6 @@
-package to2.dice.controllers.common;
+package to2.dice.controllers;
 
 import to2.dice.ai.Bot;
-import to2.dice.controllers.AbstractGameController;
-import to2.dice.controllers.GameController;
 import to2.dice.game.GameSettings;
 import to2.dice.game.GameState;
 import to2.dice.game.Player;

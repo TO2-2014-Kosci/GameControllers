@@ -1,7 +1,6 @@
-package to2.dice.controllers.common;
+package to2.dice.controllers;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import to2.dice.controllers.common.GameThread;
 
 public class MoveTimer extends Thread {
 

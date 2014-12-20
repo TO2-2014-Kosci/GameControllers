@@ -2,9 +2,6 @@ package to2.dice.controllers;
 
 import to2.dice.ai.Bot;
 import to2.dice.ai.BotFactory;
-import to2.dice.controllers.common.ControllerMessage;
-import to2.dice.controllers.common.GameThread;
-import to2.dice.controllers.common.RoomController;
 import to2.dice.game.*;
 import to2.dice.messaging.GameAction;
 import to2.dice.messaging.RerollAction;
@@ -12,7 +9,6 @@ import to2.dice.messaging.Response;
 import to2.dice.server.GameServer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractGameController implements GameController {

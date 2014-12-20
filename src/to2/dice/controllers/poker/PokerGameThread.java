@@ -2,7 +2,7 @@ package to2.dice.controllers.poker;
 
 import to2.dice.ai.Bot;
 import to2.dice.controllers.GameController;
-import to2.dice.controllers.common.GameThread;
+import to2.dice.controllers.GameThread;
 import to2.dice.controllers.poker.hands.Hand;
 import to2.dice.game.Dice;
 import to2.dice.game.GameSettings;

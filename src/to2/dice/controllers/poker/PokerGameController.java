@@ -9,7 +9,7 @@ import to2.dice.server.GameServer;
 import java.util.List;
 
 public class PokerGameController extends AbstractGameController {
-    public PokerGameController(GameServer server, GameSettings settings, String creator, GameState state) {
+    public PokerGameController(GameServer server, GameSettings settings, GameState state, String creator) {
         super(server, settings, creator, state);
         setGameThread(new PokerGameThread(server, this, settings, state, bots));
     }

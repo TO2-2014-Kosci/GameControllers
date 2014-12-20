@@ -1,4 +1,4 @@
-package to2.dice.controllers.common;
+package to2.dice.controllers;
 
 import to2.dice.game.Dice;
 
