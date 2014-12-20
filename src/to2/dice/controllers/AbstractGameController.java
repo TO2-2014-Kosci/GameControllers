@@ -31,14 +31,12 @@ public abstract class AbstractGameController implements GameController {
         roomController.addObserver(creator);
 
         createBots();
-        roomController.botGameStart();
     }
 
     public void setGameThread(GameThread gameThread) {
         this.gameThread = gameThread;
         this.gameThread.setRoomController(this.roomController);
         this.roomController.setGameThread(this.gameThread);
-
     }
 
     public GameInfo getGameInfo() {

@@ -12,5 +12,8 @@ public class PokerGameController extends AbstractGameController {
     public PokerGameController(GameServer server, GameSettings settings, String creator, GameState state) {
         super(server, settings, creator, state);
         setGameThread(new PokerGameThread(server, this, settings, state, bots));
+
+        /* must be called as last */
+        roomController.botGameStart();
     }
 }

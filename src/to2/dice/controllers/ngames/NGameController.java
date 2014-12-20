@@ -15,5 +15,8 @@ public class NGameController extends AbstractGameController {
         super(server, settings, creator, state);
         this.strategy = strategy;
         setGameThread(new NGameThread(server, this, settings, state, bots, strategy));
+
+        /* must be called as last */
+        roomController.botGameStart();
     }
 }
