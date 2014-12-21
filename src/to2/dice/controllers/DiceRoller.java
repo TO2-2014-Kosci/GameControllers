@@ -20,7 +20,7 @@ public class DiceRoller {
     }
 
     public int rollSingleDice() {
-        return Math.abs((new Integer(random.nextInt()) % 6)) + 1;
+        return Math.abs((random.nextInt() % 6)) + 1;
     }
 
     public Dice rollDice() {

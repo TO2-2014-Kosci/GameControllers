@@ -5,11 +5,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class MoveTimer extends Thread {
 
     private int time;
-    private GameThread gameThread;
+    private RoomController roomController;
 
-    public MoveTimer(int time, GameThread gameThread) {
+    public MoveTimer(int time, RoomController roomController) {
         this.time = time;
-        this.gameThread = gameThread;
+        this.roomController = roomController;
     }
 
 
@@ -34,7 +34,7 @@ public class MoveTimer extends Thread {
                     otherDices.add(p.getDice());
             }
 
-            Bot bot = bots.get(player);
+            Bot bot = playerBotMap.get(player);
             chosenDice = bot.makeMove(dice, otherDices);
 
             RerollAction rerollAction = new RerollAction(player.getName(), chosenDice);
