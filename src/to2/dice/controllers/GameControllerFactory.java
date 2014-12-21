@@ -16,11 +16,11 @@ public final class GameControllerFactory {
     public static GameController createGameControler(GameServer server, GameSettings settings, String creator) {
         switch (settings.getGameType()) {
             case NPLUS:
-                return new NGameController(server, settings, creator, new PlusCountingStrategy(), new NGameState());
+                return new NGameController(server, settings, new NGameState(), creator, new PlusCountingStrategy());
             case NMUL:
-                return new NGameController(server, settings, creator, new MulCountingStrategy(), new NGameState());
+                return new NGameController(server, settings, new NGameState(), creator, new MulCountingStrategy());
             case POKER:
-                return new PokerGameController(server, settings, creator, new GameState());
+                return new PokerGameController(server, settings, new GameState(), creator);
             default:
                 return null;
         }
