@@ -34,4 +34,8 @@ public class DiceRoller {
         dice.setDiceArray(dice_tab);
         return dice;
     }
+
+    public int rollNGamePoints(int max){
+        return (random.nextInt() % max) + 1;
+    }
 }

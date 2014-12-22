@@ -12,4 +12,13 @@ public class PlusCountingStrategy implements CountingStrategy {
         }
         return result;
     }
+
+    @Override
+    public int countMax(int diceNum){
+        int[] diceArr = new int[diceNum];
+        java.util.Arrays.fill(diceArr, 6);
+
+        Dice dice = new Dice(diceArr);
+        return countPoints(dice);
+    }
 }
