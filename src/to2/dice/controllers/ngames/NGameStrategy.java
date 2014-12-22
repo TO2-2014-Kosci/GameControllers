@@ -1,5 +1,6 @@
 package to2.dice.controllers.ngames;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import to2.dice.controllers.GameStrategy;
 import to2.dice.game.*;
 
@@ -13,8 +14,13 @@ public class NGameStrategy extends GameStrategy {
     }
 
     @Override
-    public Player getRoundWinner() {
-        return null;
+    public void startGame() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void reroll(boolean[] chosenDice) {
+        throw new NotImplementedException();
     }
 
     /*

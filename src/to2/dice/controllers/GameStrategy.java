@@ -21,13 +21,9 @@ public abstract class GameStrategy {
         this.diceRoller = new DiceRoller(settings.getDiceNumber());
     }
 
-    public abstract Player getRoundWinner();
+    public abstract void startGame();
 
-    public void rollInitialDice() {
-        for (Player player : state.getPlayers()) {
-            player.setDice(diceRoller.rollDice());
-        }
-    }
+    public abstract void reroll(boolean[] chosenDice);
 
     public void addPointToPlayer(Player player) {
         player.setScore(player.getScore() + 1);
