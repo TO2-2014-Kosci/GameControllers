@@ -26,7 +26,7 @@ public class NGameStrategyTest {
         state.addPlayer(players[0]);
         state.addPlayer(players[1]);
 
-        GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 2, 10, 2, 2, new HashMap<BotLevel, Integer>());
+        GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 1, 10, 2, 2, new HashMap<BotLevel, Integer>());
         CountingStrategy countingStrategy = new PlusCountingStrategy();
         GameStrategy gameStrategy = new NGameStrategy(settings, state, countingStrategy);
 
