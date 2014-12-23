@@ -25,7 +25,7 @@ public class RoomController {
         this.settings = settings;
         this.state = state;
         this.gameStrategy = gameStrategy;
-        this.botsAgent = new BotsAgent(gameController, settings.getTimeForMove());
+        this.botsAgent = new BotsAgent(gameController);
         this.diceRoller = new DiceRoller(settings.getDiceNumber());
     }
 

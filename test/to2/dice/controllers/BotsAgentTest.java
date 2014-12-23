@@ -74,7 +74,7 @@ public class BotsAgentTest {
         unregisteredBotPlayer = new Player("UnregisteredBot", true, 5);
         secondBotPlayer = new Player("SecondBot", true, 5);
 
-        agent = new BotsAgent(controller, 100);
+        agent = new BotsAgent(controller);
         agent.registerBot(botPlayer, new MyBot(true));
         agent.registerBot(secondBotPlayer, new MyBot(false));
 
