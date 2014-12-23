@@ -40,4 +40,8 @@ public class Generator {
     public int generatePlayerIndex(int length){
         return Math.abs(new Integer(random.nextInt() % length));
     }
+
+    public int generateWinningNumber(int max){
+        return (random.nextInt(max) + 1);
+    }
 }

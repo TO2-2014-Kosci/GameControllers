@@ -1,6 +1,5 @@
 package to2.dice.controllers.ngames;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import to2.dice.controllers.GameStrategy;
 import to2.dice.game.*;
 
@@ -9,10 +8,12 @@ import java.util.Random;
 public class NGameStrategy extends GameStrategy {
     private CountingStrategy countingStrategy;
     private Player currentPlayer;
+    private Generator generator;
 
     public NGameStrategy(GameSettings settings, NGameState state, CountingStrategy countingStrategy) {
         super(settings, state);
         this.countingStrategy = countingStrategy;
+        generator = new Generator(settings.getDiceNumber());
     }
 
     @Override
@@ -22,7 +23,7 @@ public class NGameStrategy extends GameStrategy {
         generateRandomPlayer();
 
         ((NGameState) state).setWinningNumber(
-                diceRoller.rollNGamePoints(countingStrategy.countMax(settings.getDiceNumber()))
+                generator.generateWinningNumber(countingStrategy.countMax(settings.getDiceNumber()))
         );
     }
 
@@ -34,8 +35,11 @@ public class NGameStrategy extends GameStrategy {
 
         if(isWinner(currentPlayer)) {
             state.setCurrentRound(state.getCurrentRound() + 1);
-            if (state.getCurrentRound() < settings.getRoundsToWin()) startNewRound();
-            else finishGame();
+            if (state.getCurrentRound() < settings.getRoundsToWin()) {
+                startNewRound();
+            } else {
+                finishGame();
+            }
         }
 
         if (state.isGameStarted()) {
