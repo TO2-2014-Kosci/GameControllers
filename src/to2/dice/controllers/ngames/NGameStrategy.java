@@ -4,9 +4,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import to2.dice.controllers.GameStrategy;
 import to2.dice.game.*;
 
+import java.util.Random;
+
 public class NGameStrategy extends GameStrategy {
     private CountingStrategy countingStrategy;
-    private Player currentPlayer = state.getPlayers().get(0);
+    private Player currentPlayer;
 
     public NGameStrategy(GameSettings settings, NGameState state, CountingStrategy countingStrategy) {
         super(settings, state);
@@ -17,7 +19,9 @@ public class NGameStrategy extends GameStrategy {
     protected void startNewRound() {
         super.startNewRound();
         //TODO: initial hand is not winning Hand and maybe random player starting round
-        ((NGameState)state).setWinningNumber(
+        generateRandomPlayer();
+
+        ((NGameState) state).setWinningNumber(
                 diceRoller.rollNGamePoints(countingStrategy.countMax(settings.getDiceNumber()))
         );
     }
@@ -41,5 +45,14 @@ public class NGameStrategy extends GameStrategy {
 
     private boolean isWinner(Player p){
         return ((NGameState)state).getWinningNumber() == countingStrategy.countPoints(p.getDice());
+    }
+
+    private void generateRandomPlayer(){
+        Random rand = new Random();
+        for(int i = rand.nextInt(settings.getMaxPlayers()); i>0; i--)
+            currentPlayer = currentPlayerIt.next();
+        if(!currentPlayerIt.hasNext()) currentPlayerIt = state.getPlayers().listIterator();
+
+        currentPlayer = currentPlayerIt.next();
     }
 }
