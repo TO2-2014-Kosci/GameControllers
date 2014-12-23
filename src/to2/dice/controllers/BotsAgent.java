@@ -5,10 +5,7 @@ import to2.dice.game.GameState;
 import to2.dice.game.Player;
 import to2.dice.messaging.RerollAction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class BotsAgent {
@@ -17,6 +14,7 @@ public class BotsAgent {
     private GameController gameController;
     private Map<Player, Bot> playerBotMap = new HashMap<Player, Bot>();
     private BlockingQueue<GameState> queue = new LinkedBlockingQueue<GameState>();
+    private int timeForMove;
 
     private class GameStateProcessor implements Runnable {
         @Override
@@ -30,6 +28,7 @@ public class BotsAgent {
                         Bot currentBot = playerBotMap.get(currentPlayer);
                         boolean[] chosenDice = currentBot.makeMove(currentPlayer.getDice().getDiceArray(),
                                 getOtherDiceArrays(state, currentPlayer));
+                        Thread.sleep(timeForMove);
                         gameController.handleGameAction(new RerollAction(currentPlayer.getName(), chosenDice));
                     }
                 } catch (InterruptedException e) {
@@ -39,8 +38,9 @@ public class BotsAgent {
         }
     }
 
-    public BotsAgent(GameController gameController) {
+    public BotsAgent(GameController gameController, int timeForMove) {
         this.gameController = gameController;
+        this.timeForMove = (int)(timeForMove - timeForMove / 10);
         processor.submit(new GameStateProcessor());
     }
 
