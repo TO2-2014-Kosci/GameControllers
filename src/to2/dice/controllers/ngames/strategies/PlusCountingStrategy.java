@@ -3,7 +3,7 @@ package to2.dice.controllers.ngames.strategies;
 import to2.dice.controllers.ngames.CountingStrategy;
 import to2.dice.game.Dice;
 
-public class PlusCountingStrategy implements CountingStrategy {
+public class PlusCountingStrategy extends CountingStrategy {
     @Override
     public int countPoints(Dice dice) {
         int result = 0;
@@ -14,11 +14,11 @@ public class PlusCountingStrategy implements CountingStrategy {
     }
 
     @Override
-    public int countMax(int diceNum){
-        int[] diceArr = new int[diceNum];
-        java.util.Arrays.fill(diceArr, 6);
-
-        Dice dice = new Dice(diceArr);
-        return countPoints(dice);
+    public int generateWinningNumber(int diceNumber) {
+        int sumToThrow = 0;
+        for(int i = 0; i < diceNumber; i++ ){
+            sumToThrow += random.nextInt(6) + 1;
+        }
+        return sumToThrow;
     }
 }

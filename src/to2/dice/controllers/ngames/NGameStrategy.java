@@ -8,12 +8,10 @@ import java.util.Random;
 public class NGameStrategy extends GameStrategy {
     private CountingStrategy countingStrategy;
     private Player currentPlayer;
-    private Generator generator;
 
     public NGameStrategy(GameSettings settings, NGameState state, CountingStrategy countingStrategy) {
         super(settings, state);
         this.countingStrategy = countingStrategy;
-        generator = new Generator(settings.getDiceNumber());
     }
 
     @Override
@@ -23,7 +21,7 @@ public class NGameStrategy extends GameStrategy {
         generateRandomPlayer();
 
         ((NGameState) state).setWinningNumber(
-                generator.generateWinningNumber(countingStrategy.countMax(settings.getDiceNumber()))
+                countingStrategy.generateWinningNumber(settings.getDiceNumber())
         );
     }
 
