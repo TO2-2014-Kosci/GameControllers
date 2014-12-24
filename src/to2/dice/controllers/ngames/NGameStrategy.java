@@ -32,7 +32,6 @@ public class NGameStrategy extends GameStrategy {
         }
 
         if(isWinner(currentPlayer)) {
-            state.setCurrentRound(state.getCurrentRound() + 1);
             if (state.getCurrentRound() < settings.getRoundsToWin()) {
                 startNewRound();
             } else {
