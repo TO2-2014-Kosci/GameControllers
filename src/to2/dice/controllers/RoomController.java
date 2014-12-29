@@ -17,6 +17,9 @@ public class RoomController {
     private final List<String> observers = new ArrayList<String>();
 
     private final int roomInactivityTime = 5000;
+    private final int rerollsNumber = 2;
+    private int currentRerollNumber;
+    private ListIterator<Player> currentPlayerIt;
     private DiceRoller diceRoller;
 //    private MoveTimer moveTimer;
 
@@ -25,6 +28,7 @@ public class RoomController {
         this.settings = settings;
         this.state = state;
         this.gameStrategy = gameStrategy;
+        currentPlayerIt = state.getPlayers().listIterator();
         this.botsAgent = new BotsAgent(gameController);
         this.diceRoller = new DiceRoller(settings.getDiceNumber());
     }
@@ -56,16 +60,29 @@ public class RoomController {
 
     public void removePlayer(String playerName) {
         state.removePlayer(new Player(playerName, false, settings.getDiceNumber()));
+        currentPlayerIt = state.getPlayers().listIterator();
         gameController.sendNewGameState();
     }
 
     public boolean handleRerollRequest(boolean[] chosenDice) {
 //        boolean notTooLate = moveTimer.tryStop();
-//        if (notTooLate) {
-        gameStrategy.reroll(chosenDice);
-        updateGameState();
 
-        return true;
+//        if (notTooLate) {
+            Dice currentPlayerDice = state.getCurrentPlayer().getDice();
+            int[] diceArray = currentPlayerDice.getDiceArray();
+
+            for (int i = 0; i < settings.getDiceNumber(); i++) {
+                if (chosenDice[i]) {
+                    diceArray[i] = diceRoller.rollSingleDice();
+                }
+            }
+            currentPlayerDice.setDiceArray(diceArray);
+            state.getCurrentPlayer().setDice(currentPlayerDice);
+
+            nextPlayer();
+            updateGameState();
+
+            return true;
 //        } else {
 //            return false;
 //        }
@@ -126,11 +143,54 @@ public class RoomController {
 
     private void addPlayer(Player player) {
         state.addPlayer(player);
+        currentPlayerIt = state.getPlayers().listIterator();
         gameController.sendNewGameState();
 
         if (isGameStartConditionMet()) {
-            gameStrategy.startGame();
-            updateGameState();
+            startGame();
+        }
+    }
+
+    private void startGame() {
+        state.setGameStarted(true);
+        startNewRound();
+        nextPlayer();
+        updateGameState();
+    }
+
+    private void finishGame() {
+        state.setGameStarted(false);
+    }
+
+    protected void startNewRound() {
+        state.setCurrentRound(state.getCurrentRound() + 1);
+        currentRerollNumber = 1;
+        gameStrategy.rollInitialDice();
+    }
+
+    private void nextPlayer() {
+        if (!currentPlayerIt.hasNext()) {
+            if (currentRerollNumber < rerollsNumber) {
+                /* it was not last reroll in this round, start new reroll */
+                currentRerollNumber++;
+                currentPlayerIt = state.getPlayers().listIterator();
+            } else {
+                /* it was last reroll in this round */
+                Player roundWinner = gameStrategy.getRoundWinner();
+                gameStrategy.addPointToPlayer(roundWinner);
+
+                if (state.getCurrentRound() < settings.getRoundsToWin()) {
+                    /* it was not last round*/
+                    startNewRound();
+                    currentPlayerIt = state.getPlayers().listIterator();
+                } else {
+                    /* it was last round */
+                    finishGame();
+                }
+            }
+        }
+        if (state.isGameStarted()) {
+            state.setCurrentPlayer(currentPlayerIt.next());
         }
     }
 }
