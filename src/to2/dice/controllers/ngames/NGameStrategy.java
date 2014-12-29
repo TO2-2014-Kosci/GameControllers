@@ -3,9 +3,11 @@ package to2.dice.controllers.ngames;
 import to2.dice.controllers.GameStrategy;
 import to2.dice.game.*;
 
+import java.util.Random;
+
 public class NGameStrategy extends GameStrategy {
     private CountingStrategy countingStrategy;
-    private boolean winningHand;
+    private Player currentPlayer;
 
     public NGameStrategy(GameSettings settings, NGameState state, CountingStrategy countingStrategy) {
         super(settings, state);
@@ -13,64 +15,45 @@ public class NGameStrategy extends GameStrategy {
     }
 
     @Override
-    public Player getRoundWinner() {
-        return null;
+    protected void startNewRound() {
+        super.startNewRound();
+        //TODO: initial hand is not winning Hand and maybe random player starting round
+        generateRandomPlayer();
+
+        ((NGameState) state).setWinningNumber(
+                countingStrategy.generateWinningNumber(settings.getDiceNumber())
+        );
     }
 
-    /*
-    private class NGameRoutine implements Runnable{
-        @Override
-        public void run() {
-            try {
-                synchronized (roomController) {
-                    state.setGameStarted(true);
+    @Override
+    protected void nextPlayer(){
+        if (!currentPlayerIt.hasNext()) {
+            currentPlayerIt = state.getPlayers().listIterator();
+        }
 
-                    while(state.getCurrentRound() < settings.getRoundsToWin()){
-                        startNewRound();
-                        winningHand = false;
-                        rollInitialDice();
-
-                        while(!winningHand){
-                            for (Player currentPlayer : state.getPlayers()) {
-                                state.setCurrentPlayer(currentPlayer);
-                                roomController.updateGameState();
-
-                                if (currentPlayer.isBot()) {
-                                    chosenDice = playerBotMap.get(currentPlayer).makeMove(currentPlayer.getDice().getDiceArray(),
-                                            getOtherDiceArrays(currentPlayer));
-                                } else {
-                                    while (chosenDice == null) {
-                                        roomController.wait();
-                                    }
-                                }
-
-                                Dice currentPlayerDice = currentPlayer.getDice();
-                                int[] diceArray = currentPlayerDice.getDiceArray();
-
-                                for (int i = 0; i < settings.getDiceNumber(); i++) {
-                                    if (chosenDice[i]) {
-                                        diceArray[i] = diceRoller.rollSingleDice();
-                                    }
-                                }
-                                chosenDice = null;
-                                currentPlayerDice.setDiceArray(diceArray);
-                                state.getCurrentPlayer().setDice(currentPlayerDice);
-
-                                if(countingStrategy.countPoints(currentPlayerDice) == ((NGameState)state).getWinningNumber()){
-                                    winningHand = true;
-                                    addPointToPlayer(currentPlayer);
-                                }
-                            }
-                        }
-                    }
-
-                    state.setGameStarted(false);
-                    roomController.updateGameState();
-                }
-            }
-            catch(InterruptedException e) {
-                System.out.println("Fatal Error: GameThread interrupted!");
+        if(isWinner(currentPlayer)) {
+            if (state.getCurrentRound() < settings.getRoundsToWin()) {
+                startNewRound();
+            } else {
+                finishGame();
             }
         }
-    }*/
+
+        if (state.isGameStarted()) {
+            state.setCurrentPlayer(currentPlayerIt.next());
+        }
+    }
+
+    private boolean isWinner(Player p){
+        return ((NGameState)state).getWinningNumber() == countingStrategy.countPoints(p.getDice());
+    }
+
+    private void generateRandomPlayer(){
+        Random rand = new Random();
+        for(int i = rand.nextInt(settings.getMaxPlayers()); i>0; i--)
+            currentPlayer = currentPlayerIt.next();
+        if(!currentPlayerIt.hasNext()) currentPlayerIt = state.getPlayers().listIterator();
+
+        currentPlayer = currentPlayerIt.next();
+    }
 }
