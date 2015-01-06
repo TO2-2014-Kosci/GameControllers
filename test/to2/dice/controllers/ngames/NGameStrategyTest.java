@@ -19,13 +19,14 @@ public class NGameStrategyTest {
     @Before
     public void setUp() throws Exception{
         state = new NGameState();
+        for(Player p: players){
+            state.addPlayer(p);
+        }
     }
 
     @Test
     public void testStartGame() throws Exception {
         System.out.println("TESTING GAME LOGIC IN NGAMESTRATEGY");
-        state.addPlayer(players[0]);
-        state.addPlayer(players[1]);
 
         GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 2, 10, 2, 2, new HashMap<BotLevel, Integer>());
         CountingStrategy countingStrategy = new PlusCountingStrategy();
@@ -70,11 +71,10 @@ public class NGameStrategyTest {
     }
 
     @Test
-    public void finishGame() throws Exception{
+    public void newRoundAndfinishGame() throws Exception{
         System.out.println("TESTING NGAMESTRATEGY ENDING GAME");
-        state.addPlayer(players[0]);
 
-        GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 1, 10, 2, 1, new HashMap<BotLevel, Integer>());
+        GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 2, 10, 2, 2, new HashMap<BotLevel, Integer>());
 
         /* creating new Counting strategy without random */
         CountingStrategy countingStrategy = new CountingStrategy() {
@@ -96,10 +96,30 @@ public class NGameStrategyTest {
         /* Setting sure win number */
         state.setWinningNumber(5);
 
-
         boolean[] chosenDice = new boolean[settings.getDiceNumber()];
         java.util.Arrays.fill(chosenDice, false);
         gameStrategy.reroll(chosenDice);
+        assertTrue("Game should still be active", state.isGameStarted());
+        assertTrue("It should be second round", state.getCurrentRound() == 2);
+
+        boolean isPoint = false;
+        for(Player p: players)
+            if(p.getScore() > 0){
+                isPoint = true;
+            }
+        assertTrue("Player should get point", isPoint);
+
+        /* Setting sure win number */
+        state.setWinningNumber(5);
+        gameStrategy.reroll(chosenDice);
+
+        for(Player p: players)
+            if(p.getScore() == 0){
+                isPoint = false;
+                break;
+            }
+        assertTrue("Both players should have point", isPoint);
         assertTrue("Game should end", !state.isGameStarted());
     }
+
 }

@@ -32,6 +32,7 @@ public class NGameStrategy extends GameStrategy {
         }
 
         if(isWinner(currentPlayer)) {
+            currentPlayer.setScore(currentPlayer.getScore() + 1);
             if (state.getCurrentRound() < settings.getRoundsToWin()) {
                 startNewRound();
             } else {
@@ -50,6 +51,8 @@ public class NGameStrategy extends GameStrategy {
 
     private void generateRandomPlayer(){
         Random rand = new Random();
+
+        currentPlayerIt = state.getPlayers().listIterator();
         for(int i = rand.nextInt(settings.getMaxPlayers()); i>0; i--)
             currentPlayer = currentPlayerIt.next();
         if(!currentPlayerIt.hasNext()) currentPlayerIt = state.getPlayers().listIterator();
