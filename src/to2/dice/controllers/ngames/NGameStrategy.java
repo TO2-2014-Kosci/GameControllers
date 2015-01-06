@@ -17,7 +17,7 @@ public class NGameStrategy extends GameStrategy {
     @Override
     protected void startNewRound() {
         super.startNewRound();
-        //TODO: initial hand is not winning Hand and maybe random player starting round
+        //TODO: initial hand is not winning Hand
         generateRandomPlayer();
 
         ((NGameState) state).setWinningNumber(
@@ -27,10 +27,6 @@ public class NGameStrategy extends GameStrategy {
 
     @Override
     protected void nextPlayer(){
-        if (!currentPlayerIt.hasNext()) {
-            currentPlayerIt = state.getPlayers().listIterator();
-        }
-
         if(isWinner(currentPlayer)) {
             currentPlayer.setScore(currentPlayer.getScore() + 1);
             if (state.getCurrentRound() < settings.getRoundsToWin()) {
@@ -38,6 +34,10 @@ public class NGameStrategy extends GameStrategy {
             } else {
                 finishGame();
             }
+        }
+
+        if (!currentPlayerIt.hasNext()) {
+            currentPlayerIt = state.getPlayers().listIterator();
         }
 
         if (state.isGameStarted()) {

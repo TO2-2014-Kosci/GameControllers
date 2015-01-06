@@ -112,13 +112,6 @@ public class NGameStrategyTest {
         /* Setting sure win number */
         state.setWinningNumber(5);
         gameStrategy.reroll(chosenDice);
-
-        for(Player p: players)
-            if(p.getScore() == 0){
-                isPoint = false;
-                break;
-            }
-        assertTrue("Both players should have point", isPoint);
         assertTrue("Game should end", !state.isGameStarted());
     }
 
