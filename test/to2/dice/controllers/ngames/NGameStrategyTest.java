@@ -63,7 +63,7 @@ public class NGameStrategyTest {
             }
         }
 
-        assertTrue("Only first dice should be different", diceDiff);
+        assertTrue("Only first dice should be different (because of random, can sometimes give err)", diceDiff);
 
         if(curr == 0) curr = 1;
         else curr = 0;

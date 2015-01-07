@@ -35,12 +35,10 @@ public class NGameStrategy extends GameStrategy {
                 finishGame();
             }
         }
-
-        if (!currentPlayerIt.hasNext()) {
-            currentPlayerIt = state.getPlayers().listIterator();
-        }
-
-        if (state.isGameStarted()) {
+        else if (state.isGameStarted()) {
+            if (!currentPlayerIt.hasNext()) {
+                currentPlayerIt = state.getPlayers().listIterator();
+            }
             state.setCurrentPlayer(currentPlayerIt.next());
         }
     }
@@ -51,12 +49,10 @@ public class NGameStrategy extends GameStrategy {
 
     private void generateRandomPlayer(){
         Random rand = new Random();
+        int index = rand.nextInt(settings.getMaxPlayers());
 
-        currentPlayerIt = state.getPlayers().listIterator();
-        for(int i = rand.nextInt(settings.getMaxPlayers()); i>0; i--)
-            currentPlayer = currentPlayerIt.next();
-        if(!currentPlayerIt.hasNext()) currentPlayerIt = state.getPlayers().listIterator();
-
-        currentPlayer = currentPlayerIt.next();
+        currentPlayer = state.getPlayers().get(index);
+        if(index == settings.getMaxPlayers() - 1) index = 0;
+        currentPlayerIt = state.getPlayers().listIterator(index);
     }
 }
