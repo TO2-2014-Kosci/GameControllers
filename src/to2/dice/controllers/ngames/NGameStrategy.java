@@ -28,7 +28,7 @@ public class NGameStrategy extends GameStrategy {
     @Override
     protected void nextPlayer(){
         if(isWinner(currentPlayer)) {
-            currentPlayer.setScore(currentPlayer.getScore() + 1);
+            addPointToPlayer(currentPlayer);
             if (state.getCurrentRound() < settings.getRoundsToWin()) {
                 startNewRound();
             } else {
@@ -39,7 +39,8 @@ public class NGameStrategy extends GameStrategy {
             if (!currentPlayerIt.hasNext()) {
                 currentPlayerIt = state.getPlayers().listIterator();
             }
-            state.setCurrentPlayer(currentPlayerIt.next());
+            currentPlayer = currentPlayerIt.next();
+            state.setCurrentPlayer(currentPlayer);
         }
     }
 
@@ -52,7 +53,7 @@ public class NGameStrategy extends GameStrategy {
         int index = rand.nextInt(settings.getMaxPlayers());
 
         currentPlayer = state.getPlayers().get(index);
-        if(index == settings.getMaxPlayers() - 1) index = 0;
-        currentPlayerIt = state.getPlayers().listIterator(index);
+        currentPlayerIt = state.getPlayers().listIterator(index+1);
+        state.setCurrentPlayer(currentPlayer);
     }
 }

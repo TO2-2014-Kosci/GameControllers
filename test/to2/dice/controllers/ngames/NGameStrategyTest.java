@@ -13,7 +13,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class NGameStrategyTest {
-    private Player[] players = {new Player("first", false, 5), new Player("second", false, 5)};
+    private Player[] players = {new Player("1", false, 5), new Player("2", false, 5)};
     private NGameState state;
 
     @Before
@@ -73,8 +73,9 @@ public class NGameStrategyTest {
     @Test
     public void newRoundAndfinishGame() throws Exception{
         System.out.println("TESTING NGAMESTRATEGY ENDING GAME");
+        int roundsNum = 30;
 
-        GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 2, 10, 2, 2, new HashMap<BotLevel, Integer>());
+        GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 2, 10, 2, roundsNum, new HashMap<BotLevel, Integer>());
 
         /* creating new Counting strategy without random */
         CountingStrategy countingStrategy = new CountingStrategy() {
@@ -93,26 +94,59 @@ public class NGameStrategyTest {
         gameStrategy.startGame();
         assertTrue("Game should be started", state.isGameStarted());
 
-        /* Setting sure win number */
-        state.setWinningNumber(5);
-
         boolean[] chosenDice = new boolean[settings.getDiceNumber()];
         java.util.Arrays.fill(chosenDice, false);
-        gameStrategy.reroll(chosenDice);
-        assertTrue("Game should still be active", state.isGameStarted());
-        assertTrue("It should be second round", state.getCurrentRound() == 2);
 
-        boolean isPoint = false;
-        for(Player p: players)
-            if(p.getScore() > 0){
-                isPoint = true;
-            }
-        assertTrue("Player should get point", isPoint);
-
-        /* Setting sure win number */
-        state.setWinningNumber(5);
-        gameStrategy.reroll(chosenDice);
+        while(state.isGameStarted()) {
+            /* Setting sure win number for the second player*/
+            if(state.getCurrentPlayer() == players[1]) state.setWinningNumber(5);
+            assertTrue("Game should still be active", state.isGameStarted());
+            gameStrategy.reroll(chosenDice);
+        }
+        System.out.println(players[0].getScore() + " " + players[1].getScore());
+        assertTrue("Only second player should have points", players[0].getScore() == 0 && players[1].getScore() == roundsNum);
         assertTrue("Game should end", !state.isGameStarted());
     }
 
+
+    @Test
+    public void playersOrderTest() throws Exception{
+        System.out.println("playersOrderTest");
+        int numberOfPlayers = 10;
+        state = new NGameState();
+        Player currPlayer;
+        ArrayList<Player> newPlayers = new ArrayList<>();
+        for(int i = 0; i<numberOfPlayers; i++){
+            newPlayers.add(new Player(String.valueOf(i), false, 5));
+            state.addPlayer(newPlayers.get(i));
+        }
+
+        GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 2, 10, 2, 2, new HashMap<BotLevel, Integer>());
+        /* creating new Counting strategy without random */
+        CountingStrategy countingStrategy = new CountingStrategy() {
+            @Override
+            public int countPoints(Dice dice) {
+                return 5;
+            }
+
+            @Override
+            public int generateWinningNumber(int diceNumber) {
+                return 6;
+            }
+        };
+        GameStrategy gameStrategy = new NGameStrategy(settings, state, countingStrategy);
+
+        gameStrategy.startGame();
+        currPlayer = state.getCurrentPlayer();
+        int currPlayerIndex = newPlayers.indexOf(currPlayer);
+        boolean[] chosenDice = new boolean[settings.getDiceNumber()];
+        java.util.Arrays.fill(chosenDice, false);
+        for(int i = 0; i<5*numberOfPlayers; i++){
+            gameStrategy.reroll(chosenDice);
+            currPlayerIndex++;
+            if(currPlayerIndex >= numberOfPlayers) currPlayerIndex = 0;
+            assertTrue("It should be " + currPlayerIndex + " player playing",
+                    newPlayers.indexOf(state.getCurrentPlayer()) == currPlayerIndex);
+        }
+    }
 }
