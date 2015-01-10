@@ -1,11 +1,23 @@
 package to2.dice.controllers;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MoveTimer extends Thread {
+
+public class MoveTimer {
 
     private int time;
     private RoomController roomController;
+    private Timer timer = new Timer();
+    private EndOfTimeTask timerTask;
+
+    private class EndOfTimeTask extends TimerTask {
+
+        @Override
+        public void run() {
+            roomController.handleEndOfTimeRequest();
+        }
+    }
 
     public MoveTimer(int time, RoomController roomController) {
         this.time = time;
@@ -14,46 +26,12 @@ public class MoveTimer extends Thread {
 
 
     public void start() {
-        throw new NotImplementedException();
+        timer.purge();
+        timerTask = new EndOfTimeTask();
+        timer.schedule(timerTask, time);
     }
 
     public boolean tryStop() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public void run() {
-       /* boolean[] chosenDice;
-
-        if (player.isBot()) {
-            Dice dice = player.getDice();
-
-            List<Dice> otherDices = new ArrayList<Dice>();
-            for (Player p : state.getPlayers()) {
-                if (p.equals(player))
-                    otherDices.add(p.getDice());
-            }
-
-            Bot bot = playerBotMap.get(player);
-            chosenDice = bot.makeMove(dice, otherDices);
-
-            RerollAction rerollAction = new RerollAction(player.getName(), chosenDice);
-            controller.handleGameAction(rerollAction);
-        } else {
-            // sleep max time, that player can wait and then reroll nothing
-            int startTurn = currentTurn;
-            try {
-                sleep(settings.getTimeForMove());
-            } catch (InterruptedException e) {
-            }
-
-            if (currentTurn == startTurn) {
-                chosenDice = new boolean[settings.getDiceNumber()];
-                RerollAction rerollAction = new RerollAction(player.getName(), chosenDice);
-                Response response = controller.handleGameAction(rerollAction);
-                if (response.type == Response.Type.SUCCESS)
-                    ((PokerGameController) controller).addPenaltyToPlayer(player);
-            }
-        */
+        return timerTask.cancel();
     }
 }

@@ -13,12 +13,10 @@ public class RoomController {
     private GameStrategy gameStrategy;
     private final AbstractGameController gameController;
     private final BotsAgent botsAgent;
+    private MoveTimer moveTimer;
 
     private final List<String> observers = new ArrayList<String>();
-
     private final int roomInactivityTime = 5000;
-    private DiceRoller diceRoller;
-//    private MoveTimer moveTimer;
 
     public RoomController(AbstractGameController gameController, GameSettings settings, GameState state, GameStrategy gameStrategy) {
         this.gameController = gameController;
@@ -26,7 +24,7 @@ public class RoomController {
         this.state = state;
         this.gameStrategy = gameStrategy;
         this.botsAgent = new BotsAgent(gameController);
-        this.diceRoller = new DiceRoller(settings.getDiceNumber());
+        this.moveTimer = new MoveTimer(settings.getTimeForMove(), this);
     }
 
     public void addObserver(String observerName) {
@@ -60,15 +58,14 @@ public class RoomController {
     }
 
     public boolean handleRerollRequest(boolean[] chosenDice) {
-//        boolean notTooLate = moveTimer.tryStop();
-//        if (notTooLate) {
-        gameStrategy.reroll(chosenDice);
-        updateGameState();
-
-        return true;
-//        } else {
-//            return false;
-//        }
+        boolean notTooLate = moveTimer.tryStop();
+        if (notTooLate) {
+            gameStrategy.reroll(chosenDice);
+            updateGameState();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void createBots() {
@@ -132,5 +129,9 @@ public class RoomController {
             gameStrategy.startGame();
             updateGameState();
         }
+    }
+
+    public void handleEndOfTimeRequest() {
+
     }
 }

@@ -44,7 +44,7 @@ public abstract class AbstractGameController implements GameController {
                 response = standUp(gameAction.getSender());
                 break;
             case REROLL:
-                response = reroll(gameAction.getSender(), ((RerollAction) gameAction).getChosenDice());
+                response = reroll(gameAction.getSender(), ((RerollAction)gameAction).getChosenDice());
                 break;
         }
         return response;
