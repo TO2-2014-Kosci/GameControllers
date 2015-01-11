@@ -53,7 +53,11 @@ public class RoomController {
     }
 
     public void removePlayer(String playerName) {
-        state.removePlayer(new Player(playerName, false, settings.getDiceNumber()));
+        if (isGameStarted()) {
+            gameStrategy.removePlayerWithName(playerName);
+        } else {
+            state.removePlayerWithName(playerName);
+        }
         gameController.sendNewGameState();
     }
 
@@ -66,6 +70,10 @@ public class RoomController {
         } else {
             return false;
         }
+    }
+
+    public void handleEndOfTimeRequest() {
+        gameStrategy.addPenaltyToPlayer(state.getCurrentPlayer());
     }
 
     public void createBots() {
@@ -84,9 +92,15 @@ public class RoomController {
         }
     }
 
+    public void updateGameState() {
+        gameController.sendNewGameState();
+        botsAgent.processNewGameState(state);
+    }
+
     public GameState getGameState() {
         return state;
     }
+
 
     public String getCurrentPlayerName() {
         return state.getCurrentPlayer().getName();
@@ -104,14 +118,10 @@ public class RoomController {
         return (state.isGameStarted());
     }
 
-    public void updateGameState() {
-        gameController.sendNewGameState();
-        botsAgent.processNewGameState(state);
-    }
-
     public boolean isRoomFull() {
         return (state.getPlayers().size() == settings.getMaxPlayers());
     }
+
 
     private boolean isRoomEmpty() {
         return (observers.isEmpty());
@@ -131,7 +141,4 @@ public class RoomController {
         }
     }
 
-    public void handleEndOfTimeRequest() {
-
-    }
 }

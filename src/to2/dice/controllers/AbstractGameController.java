@@ -90,9 +90,9 @@ public abstract class AbstractGameController implements GameController {
             return new Response(Response.Type.FAILURE, ControllerMessage.SENDER_IS_NOT_OBSERVER.toString());
         } else if (!roomController.isPlayerWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_ALREADY_STAND_UP.toString());
-        } else if (roomController.isGameStarted()) {
-            return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_IS_IN_GAME.toString());
-            //TODO allow users to standUp during game -> implement roomController.removePlayer() with safe removing currrentPlayer
+//        } else if (roomController.isGameStarted()) {
+//            return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_IS_IN_GAME.toString());
+//            TODO allow users to standUp during game -> implement roomController.removePlayerWithName() with safe removing currrentPlayer
         } else {
             roomController.removePlayer(senderName);
             return new Response(Response.Type.SUCCESS);
