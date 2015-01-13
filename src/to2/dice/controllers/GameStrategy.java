@@ -69,6 +69,7 @@ public abstract class GameStrategy {
             removePlayerWithName(player.getName());
         } else {
             numberOfAbsences.put(player, currentAbsences);
+            nextPlayer();
         }
     }
 
