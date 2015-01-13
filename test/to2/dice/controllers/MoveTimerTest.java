@@ -52,8 +52,7 @@ public class MoveTimerTest {
             @Override
             public boolean handleRerollRequest(boolean[] chosenDice) {
                 boolean notTooLate = moveTimer.tryStop();
-                if(notTooLate) return true;
-                else return false;
+                return notTooLate;
             }
         };
         moveTimer = new MoveTimer2(roomController);

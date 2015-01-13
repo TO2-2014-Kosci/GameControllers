@@ -103,6 +103,9 @@ public abstract class AbstractGameController implements GameController {
         if (!roomController.isObserverWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.NO_SUCH_JOINED_OBSERVER.toString());
         } else {
+            if (roomController.isPlayerWithName(senderName)){
+                roomController.removePlayer(senderName);
+            }
             roomController.removeObserver(senderName);
             return new Response(Response.Type.SUCCESS);
         }
