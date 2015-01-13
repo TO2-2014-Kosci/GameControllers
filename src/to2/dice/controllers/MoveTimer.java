@@ -32,6 +32,10 @@ public class MoveTimer {
     }
 
     public boolean tryStop() {
-        return timerTask.cancel();
+        try {
+            return timerTask.cancel();
+        } catch (NullPointerException e) {
+            return true;
+        }
     }
 }

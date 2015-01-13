@@ -24,7 +24,7 @@ public class RoomController {
         this.state = state;
         this.gameStrategy = gameStrategy;
         this.botsAgent = new BotsAgent(gameController);
-        this.moveTimer = new MoveTimer(settings.getTimeForMove(), this);
+        this.moveTimer = new MoveTimer(settings.getTimeForMove()*1000, this);
     }
 
     public void addObserver(String observerName) {
@@ -65,6 +65,9 @@ public class RoomController {
         boolean notTooLate = moveTimer.tryStop();
         if (notTooLate) {
             gameStrategy.reroll(chosenDice);
+            if (state.isGameStarted()) {
+                moveTimer.start();
+            }
             updateGameState();
             return true;
         } else {
