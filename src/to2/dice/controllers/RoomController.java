@@ -86,7 +86,7 @@ public class RoomController {
 
             for (int i = 0; i < botsNumber; i++) {
                 Bot bot = BotFactory.createBot(settings.getGameType(), botLevel, settings.getTimeForMove());
-                String botName = "bot#" + botId++;
+                String botName = botLevel.toString() + "_Bot#" + botId++;
                 addBotPlayer(botName, bot);
             }
         }
