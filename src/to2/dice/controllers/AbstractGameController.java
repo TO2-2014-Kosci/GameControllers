@@ -5,6 +5,7 @@ import to2.dice.messaging.GameAction;
 import to2.dice.messaging.RerollAction;
 import to2.dice.messaging.Response;
 import to2.dice.server.GameServer;
+import to2.dice.utils.Copy;
 
 public abstract class AbstractGameController implements GameController {
     protected final GameServer server;
@@ -51,7 +52,8 @@ public abstract class AbstractGameController implements GameController {
     }
 
     public void sendNewGameState() {
-        server.sendToAll(this, roomController.getGameState());
+        GameState state = (GameState) Copy.deepCopy(roomController.getGameState());
+        server.sendToAll(this, state);
     }
 
     public void sendFinishGameSignal() {
@@ -90,9 +92,6 @@ public abstract class AbstractGameController implements GameController {
             return new Response(Response.Type.FAILURE, ControllerMessage.SENDER_IS_NOT_OBSERVER.toString());
         } else if (!roomController.isPlayerWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_ALREADY_STAND_UP.toString());
-//        } else if (roomController.isGameStarted()) {
-//            return new Response(Response.Type.FAILURE, ControllerMessage.PLAYER_IS_IN_GAME.toString());
-//            TODO allow users to standUp during game -> implement roomController.removePlayerWithName() with safe removing currrentPlayer
         } else {
             roomController.removePlayer(senderName);
             return new Response(Response.Type.SUCCESS);
@@ -104,7 +103,7 @@ public abstract class AbstractGameController implements GameController {
             return new Response(Response.Type.FAILURE, ControllerMessage.NO_SUCH_JOINED_OBSERVER.toString());
         } else {
             if (roomController.isPlayerWithName(senderName)){
-                roomController.removePlayer(senderName);
+                standUp(senderName);
             }
             roomController.removeObserver(senderName);
             return new Response(Response.Type.SUCCESS);
