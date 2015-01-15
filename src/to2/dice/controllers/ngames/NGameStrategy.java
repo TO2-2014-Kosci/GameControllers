@@ -17,7 +17,7 @@ public class NGameStrategy extends GameStrategy {
     @Override
     protected void startNewRound() {
         super.startNewRound();
-        //TODO: initial hand is not winning Hand and maybe random player starting round
+        //TODO: initial hand is not winning Hand
         generateRandomPlayer();
 
         ((NGameState) state).setWinningNumber(
@@ -27,20 +27,20 @@ public class NGameStrategy extends GameStrategy {
 
     @Override
     protected void nextPlayer(){
-        if (!currentPlayerIt.hasNext()) {
-            currentPlayerIt = state.getPlayers().listIterator();
-        }
-
         if(isWinner(currentPlayer)) {
+            addPointToPlayer(currentPlayer);
             if (state.getCurrentRound() < settings.getRoundsToWin()) {
                 startNewRound();
             } else {
                 finishGame();
             }
         }
-
-        if (state.isGameStarted()) {
-            state.setCurrentPlayer(currentPlayerIt.next());
+        else if (state.isGameStarted()) {
+            if (!currentPlayerIt.hasNext()) {
+                currentPlayerIt = state.getPlayers().listIterator();
+            }
+            currentPlayer = currentPlayerIt.next();
+            state.setCurrentPlayer(currentPlayer);
         }
     }
 
@@ -50,10 +50,10 @@ public class NGameStrategy extends GameStrategy {
 
     private void generateRandomPlayer(){
         Random rand = new Random();
-        for(int i = rand.nextInt(settings.getMaxPlayers()); i>0; i--)
-            currentPlayer = currentPlayerIt.next();
-        if(!currentPlayerIt.hasNext()) currentPlayerIt = state.getPlayers().listIterator();
+        int index = rand.nextInt(settings.getMaxPlayers());
 
-        currentPlayer = currentPlayerIt.next();
+        currentPlayer = state.getPlayers().get(index);
+        currentPlayerIt = state.getPlayers().listIterator(index+1);
+        state.setCurrentPlayer(currentPlayer);
     }
 }

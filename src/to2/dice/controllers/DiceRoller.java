@@ -20,18 +20,18 @@ public class DiceRoller {
     }
 
     public int rollSingleDice() {
-        return Math.abs((random.nextInt() % 6)) + 1;
+        return (random.nextInt(6) + 1);
     }
 
     public Dice rollDice() {
         Dice dice = new Dice(this.diceNumber);
 
-        int[] dice_tab = new int[this.diceNumber];
+        int[] diceArray = new int[this.diceNumber];
         for (int i = 0; i < this.diceNumber; i++) {
-            dice_tab[i] = rollSingleDice();
+            diceArray[i] = rollSingleDice();
         }
 
-        dice.setDiceArray(dice_tab);
+        dice.setDiceArray(diceArray);
         return dice;
     }
 }

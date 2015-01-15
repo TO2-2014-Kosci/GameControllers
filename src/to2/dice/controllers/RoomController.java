@@ -13,12 +13,10 @@ public class RoomController {
     private GameStrategy gameStrategy;
     private final AbstractGameController gameController;
     private final BotsAgent botsAgent;
+    private MoveTimer moveTimer;
 
     private final List<String> observers = new ArrayList<String>();
-
     private final int roomInactivityTime = 5000;
-    private DiceRoller diceRoller;
-//    private MoveTimer moveTimer;
 
     public RoomController(AbstractGameController gameController, GameSettings settings, GameState state, GameStrategy gameStrategy) {
         this.gameController = gameController;
@@ -26,7 +24,7 @@ public class RoomController {
         this.state = state;
         this.gameStrategy = gameStrategy;
         this.botsAgent = new BotsAgent(gameController);
-        this.diceRoller = new DiceRoller(settings.getDiceNumber());
+        this.moveTimer = new MoveTimer(settings.getTimeForMove()*1000, this);
     }
 
     public void addObserver(String observerName) {
@@ -55,20 +53,30 @@ public class RoomController {
     }
 
     public void removePlayer(String playerName) {
-        state.removePlayer(new Player(playerName, false, settings.getDiceNumber()));
+        if (isGameStarted()) {
+            gameStrategy.removePlayerWithName(playerName);
+        } else {
+            state.removePlayerWithName(playerName);
+        }
         gameController.sendNewGameState();
     }
 
     public boolean handleRerollRequest(boolean[] chosenDice) {
-//        boolean notTooLate = moveTimer.tryStop();
-//        if (notTooLate) {
-        gameStrategy.reroll(chosenDice);
-        updateGameState();
+        boolean notTooLate = moveTimer.tryStop();
+        if (notTooLate) {
+            gameStrategy.reroll(chosenDice);
+            if (state.isGameStarted()) {
+                moveTimer.start();
+            }
+            updateGameState();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        return true;
-//        } else {
-//            return false;
-//        }
+    public void handleEndOfTimeRequest() {
+        gameStrategy.addPenaltyToPlayer(state.getCurrentPlayer());
     }
 
     public void createBots() {
@@ -81,15 +89,21 @@ public class RoomController {
 
             for (int i = 0; i < botsNumber; i++) {
                 Bot bot = BotFactory.createBot(settings.getGameType(), botLevel, settings.getTimeForMove());
-                String botName = "bot#" + botId++;
+                String botName = botLevel.toString() + "_Bot#" + botId++;
                 addBotPlayer(botName, bot);
             }
         }
     }
 
+    public void updateGameState() {
+        gameController.sendNewGameState();
+        botsAgent.processNewGameState(state);
+    }
+
     public GameState getGameState() {
         return state;
     }
+
 
     public String getCurrentPlayerName() {
         return state.getCurrentPlayer().getName();
@@ -107,14 +121,10 @@ public class RoomController {
         return (state.isGameStarted());
     }
 
-    public void updateGameState() {
-        gameController.sendNewGameState();
-        botsAgent.processNewGameState(state);
-    }
-
     public boolean isRoomFull() {
         return (state.getPlayers().size() == settings.getMaxPlayers());
     }
+
 
     private boolean isRoomEmpty() {
         return (observers.isEmpty());
@@ -133,4 +143,5 @@ public class RoomController {
             updateGameState();
         }
     }
+
 }

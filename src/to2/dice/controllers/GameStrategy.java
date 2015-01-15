@@ -12,7 +12,7 @@ public abstract class GameStrategy {
     protected final GameSettings settings;
     protected final GameState state;
     protected DiceRoller diceRoller;
-    //private Map<Player, Integer> numberOfAbsences = new HashMap<>();
+    private Map<Player, Integer> numberOfAbsences = new HashMap<>();
 
     public GameStrategy(GameSettings settings, GameState state) {
         this.settings = settings;
@@ -59,24 +59,37 @@ public abstract class GameStrategy {
         player.setScore(player.getScore() + 1);
     }
 
-    protected void finishGame() {
-        state.setGameStarted(false);
-    }
-
-    //TODO uncomment and fix with implementation of MoveTimer
-    /*public void addPenaltyToPlayer(Player player) {
+    public void addPenaltyToPlayer(Player player) {
         if (!numberOfAbsences.containsKey(player)) {
             numberOfAbsences.put(player, 0);
         }
         int currentAbsences = numberOfAbsences.get(player);
         currentAbsences++;
         if (currentAbsences == settings.getMaxInactiveTurns()) {
-            removePlayer(player.getName());
+            removePlayerWithName(player.getName());
         } else {
             numberOfAbsences.put(player, currentAbsences);
+            nextPlayer();
         }
     }
 
-    protected void removePlayer(String senderName) {
-    }*/
+        protected void finishGame() {
+        state.setGameStarted(false);
+    }
+
+    protected void removePlayerWithName(String playerName) {
+        if (playerName.equals(state.getCurrentPlayer().getName())) {
+            currentPlayerIt.remove();
+            nextPlayer();
+        } else {
+            Player previousCurrentPlayer = state.getCurrentPlayer();
+            state.removePlayerWithName(playerName);
+            currentPlayerIt = state.getPlayers().listIterator();
+            while (currentPlayerIt.hasNext()) {
+                if (currentPlayerIt.next().getName().equals(previousCurrentPlayer.getName())) {
+                    break;
+                }
+            }
+        }
+    }
 }

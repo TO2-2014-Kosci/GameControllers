@@ -1,7 +1,6 @@
 package to2.dice.controllers.poker;
 
 import to2.dice.controllers.GameStrategy;
-import to2.dice.game.Dice;
 import to2.dice.game.GameSettings;
 import to2.dice.game.GameState;
 import to2.dice.game.Player;
