@@ -25,6 +25,7 @@ public class RoomController {
         this.gameStrategy = gameStrategy;
         this.botsAgent = new BotsAgent(gameController);
         this.moveTimer = new MoveTimer(settings.getTimeForMove()*1000, this);
+        gameStrategy.setMoveTimer(this.moveTimer);
     }
 
     public void addObserver(String observerName) {
@@ -64,9 +65,6 @@ public class RoomController {
         boolean notTooLate = moveTimer.tryStop();
         if (notTooLate) {
             gameStrategy.reroll(chosenDice);
-            if (state.isGameStarted()) {
-                moveTimer.start();
-            }
             updateGameState();
             return true;
         } else {
@@ -76,6 +74,7 @@ public class RoomController {
 
     public void handleEndOfTimeRequest() {
         gameStrategy.addPenaltyToPlayer(state.getCurrentPlayer());
+        updateGameState();
     }
 
     public void createBots() {

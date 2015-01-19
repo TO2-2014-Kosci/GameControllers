@@ -14,6 +14,8 @@ public abstract class GameStrategy {
     protected DiceRoller diceRoller;
     private Map<Player, Integer> numberOfAbsences = new HashMap<>();
     protected RoomController roomController;
+    protected MoveTimer moveTimer;
+
 
     public GameStrategy(GameSettings settings, GameState state) {
         this.settings = settings;
@@ -66,10 +68,13 @@ public abstract class GameStrategy {
         }
         int currentAbsences = numberOfAbsences.get(player);
         currentAbsences++;
+        System.out.println("Aktualnych nieobecnosci: " + Integer.toString(currentAbsences) + ", dozwolonych: " + Integer.toString(settings.getMaxInactiveTurns()));
         if (currentAbsences == settings.getMaxInactiveTurns()) {
             removePlayerWithName(player.getName());
+            System.out.println("wywalilem gracza");
         } else {
             numberOfAbsences.put(player, currentAbsences);
+            System.out.println("dodalem " + player.getName() + " jedna nieobecnosc");
             nextPlayer();
         }
     }
@@ -100,5 +105,9 @@ public abstract class GameStrategy {
 
     public void setRoomController(RoomController roomController) {
         this.roomController = roomController;
+    }
+
+    public void setMoveTimer(MoveTimer moveTimer) {
+        this.moveTimer = moveTimer;
     }
 }

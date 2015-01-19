@@ -1,6 +1,7 @@
 package to2.dice.controllers.poker;
 
 import to2.dice.controllers.GameStrategy;
+import to2.dice.controllers.MoveTimer;
 import to2.dice.game.GameSettings;
 import to2.dice.game.GameState;
 import to2.dice.game.Player;
@@ -11,7 +12,9 @@ import static java.lang.Thread.sleep;
 
 public class PokerGameStrategy extends GameStrategy {
 
-    private final int rerollsNumber = 2;
+    private final int lastRerollWaitTime = 5;
+
+    private final int rerollsInRound = 2;
     private int currentRerollNumber;
 
     public PokerGameStrategy(GameSettings settings, GameState state) {
@@ -27,7 +30,7 @@ public class PokerGameStrategy extends GameStrategy {
     @Override
     protected void nextPlayer() {
         if (!currentPlayerIt.hasNext()) {
-            if (currentRerollNumber < rerollsNumber) {
+            if (currentRerollNumber < rerollsInRound) {
                 /* it was not last reroll in this round, start new reroll */
                 currentRerollNumber++;
                 currentPlayerIt = state.getPlayers().listIterator();
@@ -39,7 +42,7 @@ public class PokerGameStrategy extends GameStrategy {
                 state.setCurrentPlayer(null);
                 roomController.updateGameState();
                 try {
-                    sleep(5000);
+                    sleep(lastRerollWaitTime *1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -57,6 +60,7 @@ public class PokerGameStrategy extends GameStrategy {
         }
         if (state.isGameStarted()) {
             state.setCurrentPlayer(currentPlayerIt.next());
+            moveTimer.start();
         }
     }
 
@@ -67,5 +71,4 @@ public class PokerGameStrategy extends GameStrategy {
         }
         return Collections.max(playerHand).getPlayer();
     }
-
 }
