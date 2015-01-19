@@ -110,4 +110,18 @@ public abstract class GameStrategy {
     public void setMoveTimer(MoveTimer moveTimer) {
         this.moveTimer = moveTimer;
     }
+
+    // old condition, for tests
+//    private boolean isLastRoundConditionMet() {
+//        return state.getCurrentRound() == settings.getRoundsToWin();
+//    }
+
+    protected boolean isLastRoundConditionMet() {
+        for (Player player : state.getPlayers()) {
+            if (player.getScore() == settings.getRoundsToWin()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -37,7 +37,7 @@ public class RoomController {
         observers.remove(observerName);
         if (isRoomEmpty()) {
             //TODO waiting roomInactivityTime and interrupt when addObserver
-            gameController.sendFinishGameSignal();
+           finishGame();
         }
     }
 
@@ -140,6 +140,13 @@ public class RoomController {
             gameStrategy.startGame();
             updateGameState();
         }
+    }
+
+    private void finishGame() {
+        state.setGameStarted(false);
+        botsAgent.shutdown();
+        moveTimer.tryStop();
+        gameController.sendFinishGameSignal();
     }
 
 }

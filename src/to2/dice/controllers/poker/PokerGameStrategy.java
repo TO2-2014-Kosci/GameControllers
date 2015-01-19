@@ -48,13 +48,13 @@ public class PokerGameStrategy extends GameStrategy {
                 }
 
 
-                if (state.getCurrentRound() < settings.getRoundsToWin()) {
+                if (isLastRoundConditionMet()) {
+                    /* it was last round */
+                    finishGame();
+                } else {
                     /* it was not last round */
                     startNewRound();
                     currentPlayerIt = state.getPlayers().listIterator();
-                } else {
-                    /* it was last round */
-                    finishGame();
                 }
             }
         }

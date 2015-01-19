@@ -19,7 +19,7 @@ public class BotsAgent {
     private class GameStateProcessor implements Runnable {
         @Override
         public void run() {
-            while (!Thread.interrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     GameState state = queue.take();
 
@@ -32,7 +32,7 @@ public class BotsAgent {
                         gameController.handleGameAction(new RerollAction(currentPlayer.getName(), chosenDice));
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
         }
@@ -53,6 +53,10 @@ public class BotsAgent {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void shutdown() {
+        processor.shutdownNow();
     }
 
     private List<int[]> getOtherDiceArrays(GameState state, Player player) {
