@@ -13,6 +13,7 @@ public abstract class GameStrategy {
     protected final GameState state;
     protected DiceRoller diceRoller;
     private Map<Player, Integer> numberOfAbsences = new HashMap<>();
+    protected RoomController roomController;
 
     public GameStrategy(GameSettings settings, GameState state) {
         this.settings = settings;
@@ -73,7 +74,7 @@ public abstract class GameStrategy {
         }
     }
 
-        protected void finishGame() {
+    protected void finishGame() {
         state.setGameStarted(false);
     }
 
@@ -91,5 +92,13 @@ public abstract class GameStrategy {
                 }
             }
         }
+    }
+
+    public RoomController getRoomController() {
+        return roomController;
+    }
+
+    public void setRoomController(RoomController roomController) {
+        this.roomController = roomController;
     }
 }

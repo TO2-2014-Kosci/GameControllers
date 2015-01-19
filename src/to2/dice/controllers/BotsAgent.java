@@ -24,7 +24,7 @@ public class BotsAgent {
                     GameState state = queue.take();
 
                     Player currentPlayer = state.getCurrentPlayer();
-                    if (state.isGameStarted() && state.getCurrentPlayer().isBot()) {
+                    if (state.isGameStarted() && state.getCurrentPlayer() != null && state.getCurrentPlayer().isBot()) {
                         Bot currentBot = playerBotMap.get(currentPlayer);
                         boolean[] chosenDice = currentBot.makeMove(currentPlayer.getDice().getDiceArray(),
                                 getOtherDiceArrays(state, currentPlayer));

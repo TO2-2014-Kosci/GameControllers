@@ -7,6 +7,8 @@ import to2.dice.game.Player;
 
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 public class PokerGameStrategy extends GameStrategy {
 
     private final int rerollsNumber = 2;
@@ -33,6 +35,15 @@ public class PokerGameStrategy extends GameStrategy {
                 /* it was last reroll in this round */
                 Player roundWinner = getRoundWinner();
                 addPointToPlayer(roundWinner);
+
+                state.setCurrentPlayer(null);
+                roomController.updateGameState();
+                try {
+                    sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
 
                 if (state.getCurrentRound() < settings.getRoundsToWin()) {
                     /* it was not last round */

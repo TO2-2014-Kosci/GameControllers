@@ -29,7 +29,6 @@ public class RoomController {
 
     public void addObserver(String observerName) {
         observers.add(observerName);
-        //Sending to all after joinRoom, because joining Player needs info
         gameController.sendNewGameState();
     }
 
