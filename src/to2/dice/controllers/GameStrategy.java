@@ -15,6 +15,7 @@ public abstract class GameStrategy {
     private Map<Player, Integer> numberOfAbsences = new HashMap<>();
     protected RoomController roomController;
     protected MoveTimer moveTimer;
+    protected Timer gameStateTimer = new Timer();
 
 
     public GameStrategy(GameSettings settings, GameState state) {
@@ -68,13 +69,13 @@ public abstract class GameStrategy {
         }
         int currentAbsences = numberOfAbsences.get(player);
         currentAbsences++;
-        System.out.println("Aktualnych nieobecnosci: " + Integer.toString(currentAbsences) + ", dozwolonych: " + Integer.toString(settings.getMaxInactiveTurns()));
+//        System.out.println("Aktualnych nieobecnosci: " + Integer.toString(currentAbsences) + ", dozwolonych: " + Integer.toString(settings.getMaxInactiveTurns()));
         if (currentAbsences == settings.getMaxInactiveTurns()) {
             removePlayerWithName(player.getName());
-            System.out.println("wywalilem gracza");
+//            System.out.println("wywalilem gracza");
         } else {
             numberOfAbsences.put(player, currentAbsences);
-            System.out.println("dodalem " + player.getName() + " jedna nieobecnosc");
+//            System.out.println("dodalem " + player.getName() + " jedna nieobecnosc");
             nextPlayer();
         }
     }

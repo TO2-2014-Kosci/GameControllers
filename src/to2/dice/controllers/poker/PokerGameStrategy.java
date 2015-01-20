@@ -29,6 +29,7 @@ public class PokerGameStrategy extends GameStrategy {
 
     @Override
     protected void nextPlayer() {
+        boolean delayed = false;
         if (!currentPlayerIt.hasNext()) {
             if (currentRerollNumber < rerollsInRound) {
                 /* it was not last reroll in this round, start new reroll */
@@ -36,32 +37,38 @@ public class PokerGameStrategy extends GameStrategy {
                 currentPlayerIt = state.getPlayers().listIterator();
             } else {
                 /* it was last reroll in this round */
+                delayed = true;
+
                 Player roundWinner = getRoundWinner();
                 addPointToPlayer(roundWinner);
 
                 state.setCurrentPlayer(null);
-                roomController.updateGameState();
-                try {
-                    sleep(lastRerollWaitTime *1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-
-                if (isLastRoundConditionMet()) {
+                gameStateTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (isLastRoundConditionMet()) {
                     /* it was last round */
-                    finishGame();
-                } else {
+                            finishGame();
+                        } else {
                     /* it was not last round */
-                    startNewRound();
-                    currentPlayerIt = state.getPlayers().listIterator();
-                }
+                            startNewRound();
+                            currentPlayerIt = state.getPlayers().listIterator();
+                            setNextPlayer();
+                        }
+                        roomController.updateGameState();
+                    }
+                }, lastRerollWaitTime*1000);
             }
         }
-        if (state.isGameStarted()) {
-            state.setCurrentPlayer(currentPlayerIt.next());
-            moveTimer.start();
+        if (state.isGameStarted() && !delayed) {
+            setNextPlayer();
         }
+    }
+
+    private void setNextPlayer() {
+        state.setCurrentPlayer(currentPlayerIt.next());
+        moveTimer.start();
     }
 
     private Player getRoundWinner() {
