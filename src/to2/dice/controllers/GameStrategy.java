@@ -112,6 +112,10 @@ public abstract class GameStrategy {
         this.moveTimer = moveTimer;
     }
 
+    public void shutdown() {
+        gameStateTimer.cancel();
+    }
+
     // old condition, for tests
 //    private boolean isLastRoundConditionMet() {
 //        return state.getCurrentRound() == settings.getRoundsToWin();

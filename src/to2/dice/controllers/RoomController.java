@@ -143,6 +143,7 @@ public class RoomController {
     }
 
     private void finishGame() {
+        gameStrategy.shutdown();
         state.setGameStarted(false);
         botsAgent.shutdown();
         moveTimer.tryStop();
