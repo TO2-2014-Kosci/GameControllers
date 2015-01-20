@@ -21,6 +21,8 @@ public abstract class AbstractGameController implements GameController {
 
     public void initialize(GameState state, GameStrategy gameStrategy) {
         this.roomController = new RoomController(this, settings, state, gameStrategy);
+        gameStrategy.setRoomController(this.roomController);
+
         this.roomController.addObserver(creator);
         this.roomController.createBots();
     }

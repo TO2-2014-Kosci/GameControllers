@@ -10,29 +10,29 @@ import java.util.concurrent.*;
 
 public class BotsAgent {
 
+    private final int minimalThinkingTime = 2000;
     private ExecutorService processor = Executors.newSingleThreadExecutor();
     private GameController gameController;
     private Map<Player, Bot> playerBotMap = new HashMap<Player, Bot>();
     private BlockingQueue<GameState> queue = new LinkedBlockingQueue<GameState>();
-    private final int thinkingTime = 2000;
 
     private class GameStateProcessor implements Runnable {
         @Override
         public void run() {
-            while (!Thread.interrupted()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     GameState state = queue.take();
 
                     Player currentPlayer = state.getCurrentPlayer();
-                    if (state.isGameStarted() && state.getCurrentPlayer().isBot()) {
+                    if (state.isGameStarted() && state.getCurrentPlayer() != null && state.getCurrentPlayer().isBot()) {
                         Bot currentBot = playerBotMap.get(currentPlayer);
                         boolean[] chosenDice = currentBot.makeMove(currentPlayer.getDice().getDiceArray(),
                                 getOtherDiceArrays(state, currentPlayer));
-                        Thread.sleep(thinkingTime);
+                        Thread.sleep(minimalThinkingTime);
                         gameController.handleGameAction(new RerollAction(currentPlayer.getName(), chosenDice));
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
         }
@@ -53,6 +53,10 @@ public class BotsAgent {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void shutdown() {
+        processor.shutdownNow();
     }
 
     private List<int[]> getOtherDiceArrays(GameState state, Player player) {

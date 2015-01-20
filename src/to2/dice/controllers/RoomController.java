@@ -25,11 +25,11 @@ public class RoomController {
         this.gameStrategy = gameStrategy;
         this.botsAgent = new BotsAgent(gameController);
         this.moveTimer = new MoveTimer(settings.getTimeForMove()*1000, this);
+        gameStrategy.setMoveTimer(this.moveTimer);
     }
 
     public void addObserver(String observerName) {
         observers.add(observerName);
-        //Sending to all after joinRoom, because joining Player needs info
         gameController.sendNewGameState();
     }
 
@@ -37,7 +37,7 @@ public class RoomController {
         observers.remove(observerName);
         if (isRoomEmpty()) {
             //TODO waiting roomInactivityTime and interrupt when addObserver
-            gameController.sendFinishGameSignal();
+           finishGame();
         }
     }
 
@@ -65,9 +65,6 @@ public class RoomController {
         boolean notTooLate = moveTimer.tryStop();
         if (notTooLate) {
             gameStrategy.reroll(chosenDice);
-            if (state.isGameStarted()) {
-                moveTimer.start();
-            }
             updateGameState();
             return true;
         } else {
@@ -77,6 +74,7 @@ public class RoomController {
 
     public void handleEndOfTimeRequest() {
         gameStrategy.addPenaltyToPlayer(state.getCurrentPlayer());
+        updateGameState();
     }
 
     public void createBots() {
@@ -142,6 +140,14 @@ public class RoomController {
             gameStrategy.startGame();
             updateGameState();
         }
+    }
+
+    private void finishGame() {
+        gameStrategy.shutdown();
+        state.setGameStarted(false);
+        botsAgent.shutdown();
+        moveTimer.tryStop();
+        gameController.sendFinishGameSignal();
     }
 
 }

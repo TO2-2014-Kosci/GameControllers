@@ -13,6 +13,10 @@ public abstract class GameStrategy {
     protected final GameState state;
     protected DiceRoller diceRoller;
     private Map<Player, Integer> numberOfAbsences = new HashMap<>();
+    protected RoomController roomController;
+    protected MoveTimer moveTimer;
+    protected Timer gameStateTimer = new Timer();
+
 
     public GameStrategy(GameSettings settings, GameState state) {
         this.settings = settings;
@@ -65,15 +69,18 @@ public abstract class GameStrategy {
         }
         int currentAbsences = numberOfAbsences.get(player);
         currentAbsences++;
+//        System.out.println("Aktualnych nieobecnosci: " + Integer.toString(currentAbsences) + ", dozwolonych: " + Integer.toString(settings.getMaxInactiveTurns()));
         if (currentAbsences == settings.getMaxInactiveTurns()) {
             removePlayerWithName(player.getName());
+//            System.out.println("wywalilem gracza");
         } else {
             numberOfAbsences.put(player, currentAbsences);
+//            System.out.println("dodalem " + player.getName() + " jedna nieobecnosc");
             nextPlayer();
         }
     }
 
-        protected void finishGame() {
+    protected void finishGame() {
         state.setGameStarted(false);
     }
 
@@ -91,5 +98,35 @@ public abstract class GameStrategy {
                 }
             }
         }
+    }
+
+    public RoomController getRoomController() {
+        return roomController;
+    }
+
+    public void setRoomController(RoomController roomController) {
+        this.roomController = roomController;
+    }
+
+    public void setMoveTimer(MoveTimer moveTimer) {
+        this.moveTimer = moveTimer;
+    }
+
+    public void shutdown() {
+        gameStateTimer.cancel();
+    }
+
+    // old condition, for tests
+//    private boolean isLastRoundConditionMet() {
+//        return state.getCurrentRound() == settings.getRoundsToWin();
+//    }
+
+    protected boolean isLastRoundConditionMet() {
+        for (Player player : state.getPlayers()) {
+            if (player.getScore() == settings.getRoundsToWin()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

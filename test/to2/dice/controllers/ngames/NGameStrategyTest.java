@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import to2.dice.controllers.GameController;
 import to2.dice.controllers.GameStrategy;
+import to2.dice.controllers.MoveTimer;
+import to2.dice.controllers.RoomController;
 import to2.dice.controllers.ngames.strategies.PlusCountingStrategy;
 import to2.dice.game.*;
 
@@ -14,6 +16,7 @@ import static org.junit.Assert.*;
 
 public class NGameStrategyTest {
     private Player[] players = {new Player("1", false, 5), new Player("2", false, 5)};
+    private MoveTimer moveTimer;
     private NGameState state;
 
     @Before
@@ -31,6 +34,16 @@ public class NGameStrategyTest {
         GameSettings settings = new GameSettings(GameType.NPLUS, 5, "test", 2, 10, 2, 2, new HashMap<BotLevel, Integer>());
         CountingStrategy countingStrategy = new PlusCountingStrategy();
         GameStrategy gameStrategy = new NGameStrategy(settings, state, countingStrategy);
+
+        RoomController roomController = new RoomController(null, settings, null, gameStrategy){
+            @Override
+            public void updateGameState(){}
+
+            @Override
+            public void handleEndOfTimeRequest(){}
+        };
+        gameStrategy.setRoomController(roomController);
+        ((NGameStrategy)gameStrategy).setAfterRerollWaitTime(1);
 
         assertTrue("Game shouldn't be started", !state.isGameStarted());
         assertTrue("Round shouldn't be started", state.getCurrentRound() == 0);
@@ -91,6 +104,16 @@ public class NGameStrategyTest {
         };
 
         GameStrategy gameStrategy = new NGameStrategy(settings, state, countingStrategy);
+        RoomController roomController = new RoomController(null, settings, null, gameStrategy){
+            @Override
+            public void updateGameState(){}
+
+            @Override
+            public void handleEndOfTimeRequest(){}
+        };
+        gameStrategy.setRoomController(roomController);
+        ((NGameStrategy)gameStrategy).setAfterRerollWaitTime(1);
+
         gameStrategy.startGame();
         assertTrue("Game should be started", state.isGameStarted());
 
@@ -103,7 +126,6 @@ public class NGameStrategyTest {
             assertTrue("Game should still be active", state.isGameStarted());
             gameStrategy.reroll(chosenDice);
         }
-        System.out.println(players[0].getScore() + " " + players[1].getScore());
         assertTrue("Only second player should have points", players[0].getScore() == 0 && players[1].getScore() == roundsNum);
         assertTrue("Game should end", !state.isGameStarted());
     }
@@ -111,7 +133,7 @@ public class NGameStrategyTest {
 
     @Test
     public void playersOrderTest() throws Exception{
-        System.out.println("playersOrderTest");
+        System.out.println("TESTING PLAYERS ORDER");
         int numberOfPlayers = 10;
         state = new NGameState();
         Player currPlayer;
@@ -135,6 +157,15 @@ public class NGameStrategyTest {
             }
         };
         GameStrategy gameStrategy = new NGameStrategy(settings, state, countingStrategy);
+        RoomController roomController = new RoomController(null, settings, null, gameStrategy){
+            @Override
+            public void updateGameState(){}
+
+            @Override
+            public void handleEndOfTimeRequest(){}
+        };
+        gameStrategy.setRoomController(roomController);
+        ((NGameStrategy)gameStrategy).setAfterRerollWaitTime(1);
 
         gameStrategy.startGame();
         currPlayer = state.getCurrentPlayer();
