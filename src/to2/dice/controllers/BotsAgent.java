@@ -51,7 +51,7 @@ public class BotsAgent {
         try {
             queue.put(state);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            return;
         }
     }
 

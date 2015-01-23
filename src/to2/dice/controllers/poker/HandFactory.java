@@ -11,7 +11,8 @@ import java.util.Arrays;
 public class HandFactory {
 
     public static Hand createHandFromDice(Dice dice) {
-        int[] diceArray = dice.getDiceArray();
+        int[] originalDiceArray = dice.getDiceArray();
+        int[] diceArray = Arrays.copyOf(originalDiceArray, originalDiceArray.length);
 
         if (diceArray.length != 5) {
            return null;

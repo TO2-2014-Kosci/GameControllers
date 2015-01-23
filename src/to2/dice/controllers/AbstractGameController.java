@@ -112,17 +112,17 @@ public abstract class AbstractGameController implements GameController {
         }
     }
 
-    private Response reroll(String senderName, boolean[] chosenDices) {
+    private Response reroll(String senderName, boolean[] chosenDice) {
         if (!roomController.isGameStarted()) {
             return new Response(Response.Type.FAILURE, ControllerMessage.GAME_IS_NOT_STARTED.toString());
         } else if (!roomController.isPlayerWithName(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.NO_SUCH_PLAYER.toString());
-        } else if (chosenDices.length != settings.getDiceNumber()) {
+        } else if (chosenDice.length != settings.getDiceNumber()) {
             return new Response(Response.Type.FAILURE, ControllerMessage.WRONG_DICE_NUMBER.toString());
         } else if (!roomController.getCurrentPlayerName().equals(senderName)) {
             return new Response(Response.Type.FAILURE, ControllerMessage.OTHER_PLAYERS_TURN.toString());
         } else {
-            boolean result = roomController.handleRerollRequest(chosenDices);
+            boolean result = roomController.handleRerollRequest(chosenDice);
             if (result) {
                 return new Response(Response.Type.SUCCESS);
             } else {
