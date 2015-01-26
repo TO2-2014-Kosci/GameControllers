@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 
 public class BotsAgent {
 
-    private final int minimalThinkingTime = 2000;
+    private final int minimalThinkingTime = 5000;
     private ExecutorService processor = Executors.newSingleThreadExecutor();
     private GameController gameController;
     private Map<Player, Bot> playerBotMap = new HashMap<Player, Bot>();
